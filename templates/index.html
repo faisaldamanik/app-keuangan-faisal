@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pencatat Keuangan Bulanan</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        input[type="date"],
+        input[type="month"] {
+            color-scheme: dark;
+        }
+    </style>
+</head>
+
+
+<body class="bg-slate-950 text-slate-100 min-h-screen p-4 md:p-8">
+
+<div class="max-w-6xl mx-auto space-y-8">
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4
+                bg-slate-900/80 p-6 rounded-2xl border border-slate-800
+                backdrop-blur-xl">
+
+        <div class="flex items-center gap-4">
+
+            <div class="p-3.5 bg-emerald-500/10 text-emerald-400
+                        rounded-2xl border border-emerald-500/20">
+
+                <i class="w-8 h-8" data-lucide="wallet"></i>
+
+            </div>
+
+            <div>
+
+                <h1 class="text-2xl font-bold text-white">
+                    Pencatat Keuangan Bulanan
+                </h1>
+
+                <p class="text-sm text-slate-400">
+                    Atur gaji, pengeluaran, dan tabungan setiap bulan
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- FORM GAJI -->
+
+        <form
+            action="/update-gaji"
+            method="POST"
+            class="flex items-center gap-2 w-full md:w-auto"
+        >
+
+            <div class="relative flex-1">
+
+                <span
+                    class="absolute inset-y-0 left-0 pl-3 flex
+                           items-center pointer-events-none
+                           text-slate-400 text-sm"
+                >
+                    Rp
+                </span>
+
+                <input
+                    type="number"
+                    name="gaji"
+                    value="{{ gaji }}"
+                    placeholder="Masukkan Gaji"
+                    min="0"
+                    required
+                    class="w-full pl-10 pr-4 py-2.5
+                           bg-slate-950 border border-slate-700
+                           rounded-xl text-sm text-white
+                           focus:outline-none focus:border-emerald-500"
+                >
+
+            </div>
+
+            <button
+                type="submit"
+                class="px-4 py-2.5
+                       bg-emerald-500 hover:bg-emerald-600
+                       text-slate-950 font-semibold text-sm
+                       rounded-xl transition-all
+                       flex items-center gap-1"
+            >
+
+                <i class="w-4 h-4" data-lucide="check"></i>
+
+                Set Gaji
+
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- =====================================================
+         SUMMARY
+    ====================================================== -->
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+
+
+        <!-- GAJI -->
+
+        <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800
+                    flex items-center gap-4">
+
+            <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl">
+
+                <i class="w-6 h-6" data-lucide="banknote"></i>
+
+            </div>
+
+            <div>
+
+                <p class="text-xs font-medium text-slate-400">
+                    Gaji Bulan Ini
+                </p>
+
+                <h3 class="text-xl font-bold text-emerald-400 mt-0.5">
+                    Rp {{ "{:,.0f}".format(gaji) }}
+                </h3>
+
+            </div>
+
+        </div>
+
+
+        <!-- SISA SALDO -->
+
+        <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800
+                    flex items-center gap-4">
+
+            <div class="p-3 bg-sky-500/10 text-sky-400 rounded-xl">
+
+                <i class="w-6 h-6" data-lucide="wallet-cards"></i>
+
+            </div>
+
+            <div>
+
+                <p class="text-xs font-medium text-slate-400">
+                    Sisa Saldo
+                </p>
+
+                <h3
+                    class="text-xl font-bold
+                    {% if sisa_saldo >= 0 %}
+                        text-sky-400
+                    {% else %}
+                        text-rose-400
+                    {% endif %}
+                    mt-0.5"
+                >
+                    Rp {{ "{:,.0f}".format(sisa_saldo) }}
+                </h3>
+
+            </div>
+
+        </div>
+
+
+        <!-- SUDAH DIBAYAR -->
+
+        <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800
+                    flex items-center gap-4">
+
+            <div class="p-3 bg-indigo-500/10 text-indigo-400 rounded-xl">
+
+                <i class="w-6 h-6" data-lucide="check-circle-2"></i>
+
+            </div>
+
+            <div>
+
+                <p class="text-xs font-medium text-slate-400">
+                    Sudah Dibayar
+                </p>
+
+                <h3 class="text-xl font-bold text-indigo-400 mt-0.5">
+                    Rp {{ "{:,.0f}".format(total_terbayar) }}
+                </h3>
+
+            </div>
+
+        </div>
+
+
+        <!-- BELUM DIBAYAR -->
+
+        <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800
+                    flex items-center gap-4">
+
+            <div class="p-3 bg-amber-500/10 text-amber-400 rounded-xl">
+
+                <i class="w-6 h-6" data-lucide="clock"></i>
+
+            </div>
+
+            <div>
+
+                <p class="text-xs font-medium text-slate-400">
+                    Belum Dibayar
+                </p>
+
+                <h3 class="text-xl font-bold text-amber-400 mt-0.5">
+                    Rp {{ "{:,.0f}".format(total_pending) }}
+                </h3>
+
+            </div>
+
+        </div>
+
+
+        <!-- TABUNGAN -->
+
+        <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800
+                    flex items-center gap-4">
+
+            <div class="p-3 bg-violet-500/10 text-violet-400 rounded-xl">
+
+                <i class="w-6 h-6" data-lucide="piggy-bank"></i>
+
+            </div>
+
+            <div>
+
+                <p class="text-xs font-medium text-slate-400">
+                    Total Tabungan
+                </p>
+
+                <h3 class="text-xl font-bold text-violet-400 mt-0.5">
+                    Rp {{ "{:,.0f}".format(total_tabungan) }}
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         TABUNGAN BULANAN
+    ====================================================== -->
+
+    <div class="bg-slate-900/80 p-6 rounded-2xl border border-slate-800">
+
+        <div class="flex flex-col md:flex-row md:items-center
+                    justify-between gap-4 mb-6">
+
+            <div>
+
+                <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+
+                    <i
+                        class="w-5 h-5 text-violet-400"
+                        data-lucide="piggy-bank"
+                    ></i>
+
+                    Tabungan Bulanan
+
+                </h2>
+
+                <p class="text-sm text-slate-400 mt-1">
+                    Tentukan berapa uang yang ingin kamu simpan setiap bulan.
+                </p>
+
+            </div>
+
+
+            <!-- TABUNGAN BULAN INI -->
+
+            <div
+                class="px-5 py-3
+                       bg-violet-500/10
+                       border border-violet-500/20
+                       rounded-xl"
+            >
+
+                <p class="text-xs text-slate-400">
+                    Tabungan Bulan Ini
+                </p>
+
+                <p class="text-lg font-bold text-violet-400">
+
+                    Rp {{ "{:,.0f}".format(tabungan_bulan_ini) }}
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- FORM TABUNGAN -->
+
+        <form
+            action="/tambah-tabungan"
+            method="POST"
+            class="grid grid-cols-1 md:grid-cols-4 gap-4"
+        >
+
+            <!-- BULAN -->
+
+            <div>
+
+                <label class="block text-xs text-slate-400 mb-2">
+                    Bulan
+                </label>
+
+                <input
+                    type="month"
+                    name="bulan"
+                    value="{{ bulan_sekarang }}"
+                    required
+                    class="w-full bg-slate-950
+                           border border-slate-700
+                           rounded-xl p-3.5
+                           text-sm text-slate-200
+                           focus:outline-none
+                           focus:border-violet-500"
+                >
+
+            </div>
+
+
+            <!-- JUMLAH -->
+
+            <div>
+
+                <label class="block text-xs text-slate-400 mb-2">
+                    Jumlah Tabungan
+                </label>
+
+                <input
+                    type="number"
+                    name="jumlah"
+                    min="1"
+                    placeholder="Contoh: 500000"
+                    required
+                    class="w-full bg-slate-950
+                           border border-slate-700
+                           rounded-xl p-3.5
+                           text-sm text-white
+                           placeholder-slate-500
+                           focus:outline-none
+                           focus:border-violet-500"
+                >
+
+            </div>
+
+
+            <!-- CATATAN -->
+
+            <div>
+
+                <label class="block text-xs text-slate-400 mb-2">
+                    Catatan
+                </label>
+
+                <input
+                    type="text"
+                    name="catatan"
+                    placeholder="Contoh: Tabungan rumah"
+                    class="w-full bg-slate-950
+                           border border-slate-700
+                           rounded-xl p-3.5
+                           text-sm text-white
+                           placeholder-slate-500
+                           focus:outline-none
+                           focus:border-violet-500"
+                >
+
+            </div>
+
+
+            <!-- BUTTON -->
+
+            <div class="flex items-end">
+
+                <button
+                    type="submit"
+                    class="w-full
+                           bg-violet-500
+                           hover:bg-violet-600
+                           text-white font-semibold
+                           p-3.5 rounded-xl
+                           transition-all
+                           flex items-center
+                           justify-center gap-2"
+                >
+
+                    <i
+                        class="w-4 h-4"
+                        data-lucide="piggy-bank"
+                    ></i>
+
+                    Simpan Uang
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- =====================================================
+         FORM PENGELUARAN
+    ====================================================== -->
+
+    <div class="bg-slate-900/80 p-6 rounded-2xl border border-slate-800">
+
+        <h2 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+
+            <i
+                class="w-5 h-5 text-emerald-400"
+                data-lucide="plus-circle"
+            ></i>
+
+            Tambah Pengeluaran Bulan Ini
+
+        </h2>
+
+
+        <form
+            action="/tambah-pengeluaran"
+            method="POST"
+            class="grid grid-cols-1 md:grid-cols-4 gap-4"
+        >
+
+            <input
+                type="text"
+                name="nama"
+                placeholder="Nama Pengeluaran (eg. Listrik, WiFi)"
+                required
+                class="bg-slate-950
+                       border border-slate-700
+                       rounded-xl p-3.5
+                       text-sm text-white
+                       placeholder-slate-500
+                       focus:outline-none
+                       focus:border-emerald-500"
+            >
+
+
+            <input
+                type="number"
+                name="jumlah"
+                placeholder="Jumlah (Rp)"
+                min="1"
+                required
+                class="bg-slate-950
+                       border border-slate-700
+                       rounded-xl p-3.5
+                       text-sm text-white
+                       placeholder-slate-500
+                       focus:outline-none
+                       focus:border-emerald-500"
+            >
+
+
+            <input
+                type="date"
+                name="tanggal"
+                required
+                class="bg-slate-950
+                       border border-slate-700
+                       rounded-xl p-3.5
+                       text-sm text-slate-200
+                       focus:outline-none
+                       focus:border-emerald-500"
+            >
+
+
+            <select
+                name="status"
+                class="bg-slate-950
+                       border border-slate-700
+                       rounded-xl p-3.5
+                       text-sm text-slate-200
+                       focus:outline-none
+                       focus:border-emerald-500"
+            >
+
+                <option value="pending">
+                    Belum Dibayar
+                </option>
+
+                <option value="lunas">
+                    Sudah Dibayar
+                </option>
+
+            </select>
+
+
+            <button
+                type="submit"
+                class="md:col-span-4
+                       bg-emerald-500
+                       hover:bg-emerald-600
+                       text-slate-950
+                       font-semibold
+                       p-3 rounded-xl
+                       transition-all
+                       flex items-center
+                       justify-center gap-2"
+            >
+
+                <i
+                    class="w-4 h-4"
+                    data-lucide="save"
+                ></i>
+
+                Simpan Pengeluaran
+
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- =====================================================
+         TABEL PENGELUARAN
+    ====================================================== -->
+
+    <div class="bg-slate-900/80 rounded-2xl
+                border border-slate-800 overflow-hidden">
+
+        <div class="p-6 border-b border-slate-800">
+
+            <h2 class="text-lg font-semibold text-white
+                       flex items-center gap-2">
+
+                <i
+                    class="w-5 h-5 text-emerald-400"
+                    data-lucide="list"
+                ></i>
+
+                Daftar Pengeluaran
+
+            </h2>
+
+        </div>
+
+
+        <div class="overflow-x-auto">
+
+            <table class="w-full text-left text-sm text-slate-300">
+
+                <thead
+                    class="text-xs text-slate-400
+                           uppercase bg-slate-950"
+                >
+
+                    <tr>
+
+                        <th class="px-6 py-4">
+                            Tanggal
+                        </th>
+
+                        <th class="px-6 py-4">
+                            Nama Pengeluaran
+                        </th>
+
+                        <th class="px-6 py-4">
+                            Jumlah
+                        </th>
+
+                        <th class="px-6 py-4">
+                            Status
+                        </th>
+
+                        <th class="px-6 py-4 text-right">
+                            Aksi
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody class="divide-y divide-slate-800">
+
+                    {% for item in pengeluaran %}
+
+                    <tr class="hover:bg-slate-800/50 transition-colors">
+
+                        <td class="px-6 py-4 whitespace-nowrap text-slate-400">
+
+                            {{ item.tanggal }}
+
+                        </td>
+
+
+                        <td class="px-6 py-4 font-medium text-white">
+
+                            {{ item.nama }}
+
+                        </td>
+
+
+                        <td class="px-6 py-4 font-semibold text-white">
+
+                            Rp {{ "{:,.0f}".format(item.jumlah) }}
+
+                        </td>
+
+
+                        <td class="px-6 py-4">
+
+                            {% if item.status == 'lunas' %}
+
+                            <span
+                                class="px-2.5 py-1
+                                       rounded-full text-xs
+                                       font-semibold
+                                       bg-emerald-500/10
+                                       text-emerald-400
+                                       border border-emerald-500/20"
+                            >
+                                SUDAH DIBAYAR
+                            </span>
+
+                            {% else %}
+
+                            <span
+                                class="px-2.5 py-1
+                                       rounded-full text-xs
+                                       font-semibold
+                                       bg-amber-500/10
+                                       text-amber-400
+                                       border border-amber-500/20"
+                            >
+                                BELUM DIBAYAR
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td class="px-6 py-4">
+
+                            <div
+                                class="flex items-center
+                                       justify-end gap-2"
+                            >
+
+                                <!-- BAYAR / BATALKAN -->
+
+                                <form
+                                    action="/toggle-status/{{ item.id }}"
+                                    method="POST"
+                                >
+
+                                    {% if item.status == 'pending' %}
+
+                                    <button
+                                        type="submit"
+                                        class="px-3 py-1.5
+                                               bg-emerald-500/10
+                                               hover:bg-emerald-500/20
+                                               text-emerald-400
+                                               border border-emerald-500/30
+                                               rounded-lg text-xs
+                                               font-semibold
+                                               transition-all
+                                               flex items-center gap-1"
+                                    >
+
+                                        <i
+                                            class="w-3.5 h-3.5"
+                                            data-lucide="check"
+                                        ></i>
+
+                                        Bayar
+
+                                    </button>
+
+                                    {% else %}
+
+                                    <button
+                                        type="submit"
+                                        class="px-3 py-1.5
+                                               bg-slate-700/50
+                                               hover:bg-slate-700
+                                               text-slate-300
+                                               border border-slate-600
+                                               rounded-lg text-xs
+                                               font-semibold
+                                               transition-all
+                                               flex items-center gap-1"
+                                    >
+
+                                        <i
+                                            class="w-3.5 h-3.5"
+                                            data-lucide="undo-2"
+                                        ></i>
+
+                                        Batalkan
+
+                                    </button>
+
+                                    {% endif %}
+
+                                </form>
+
+
+                                <!-- HAPUS -->
+
+                                <form
+                                    action="/hapus-pengeluaran/{{ item.id }}"
+                                    method="POST"
+                                    onsubmit="return confirm('Yakin ingin menghapus pengeluaran ini?')"
+                                >
+
+                                    <button
+                                        type="submit"
+                                        title="Hapus"
+                                        class="p-1.5
+                                               bg-rose-500/10
+                                               hover:bg-rose-500/20
+                                               text-rose-400
+                                               border border-rose-500/30
+                                               rounded-lg
+                                               transition-all"
+                                    >
+
+                                        <i
+                                            class="w-3.5 h-3.5"
+                                            data-lucide="trash-2"
+                                        ></i>
+
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+
+                    {% if not pengeluaran %}
+
+                    <tr>
+
+                        <td
+                            colspan="5"
+                            class="px-6 py-8
+                                   text-center
+                                   text-slate-500"
+                        >
+
+                            Belum ada data pengeluaran.
+                            Tambahkan data pertamamu di atas!
+
+                        </td>
+
+                    </tr>
+
+                    {% endif %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         RIWAYAT TABUNGAN
+    ====================================================== -->
+
+    <div class="bg-slate-900/80 rounded-2xl
+                border border-slate-800 overflow-hidden">
+
+        <div class="p-6 border-b border-slate-800">
+
+            <div class="flex flex-col md:flex-row
+                        md:items-center
+                        justify-between gap-3">
+
+                <div>
+
+                    <h2
+                        class="text-lg font-semibold text-white
+                               flex items-center gap-2"
+                    >
+
+                        <i
+                            class="w-5 h-5 text-violet-400"
+                            data-lucide="piggy-bank"
+                        ></i>
+
+                        Riwayat Tabungan
+
+                    </h2>
+
+                    <p class="text-sm text-slate-400 mt-1">
+                        Semua uang yang kamu simpan berdasarkan bulan.
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="px-4 py-2
+                           bg-violet-500/10
+                           border border-violet-500/20
+                           rounded-xl"
+                >
+
+                    <p class="text-xs text-slate-400">
+                        Total Semua Tabungan
+                    </p>
+
+                    <p class="text-lg font-bold text-violet-400">
+
+                        Rp {{ "{:,.0f}".format(total_tabungan) }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="overflow-x-auto">
+
+            <table class="w-full text-left text-sm text-slate-300">
+
+                <thead
+                    class="text-xs text-slate-400
+                           uppercase bg-slate-950"
+                >
+
+                    <tr>
+
+                        <th class="px-6 py-4">
+                            Bulan
+                        </th>
+
+                        <th class="px-6 py-4">
+                            Jumlah
+                        </th>
+
+                        <th class="px-6 py-4">
+                            Catatan
+                        </th>
+
+                        <th class="px-6 py-4 text-right">
+                            Aksi
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody class="divide-y divide-slate-800">
+
+                    {% for item in tabungan %}
+
+                    <tr class="hover:bg-slate-800/50 transition-colors">
+
+                        <td
+                            class="px-6 py-4
+                                   whitespace-nowrap
+                                   font-medium text-white"
+                        >
+
+                            {{ item.bulan }}
+
+                        </td>
+
+
+                        <td
+                            class="px-6 py-4
+                                   font-semibold
+                                   text-violet-400"
+                        >
+
+                            Rp {{ "{:,.0f}".format(item.jumlah) }}
+
+                        </td>
+
+
+                        <td class="px-6 py-4 text-slate-400">
+
+                            {% if item.catatan %}
+
+                                {{ item.catatan }}
+
+                            {% else %}
+
+                                -
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td class="px-6 py-4 text-right">
+
+                            <form
+                                action="/hapus-tabungan/{{ item.id }}"
+                                method="POST"
+                                class="inline"
+                                onsubmit="return confirm('Yakin ingin menghapus tabungan ini?')"
+                            >
+
+                                <button
+                                    type="submit"
+                                    title="Hapus"
+                                    class="p-1.5
+                                           bg-rose-500/10
+                                           hover:bg-rose-500/20
+                                           text-rose-400
+                                           border border-rose-500/30
+                                           rounded-lg
+                                           transition-all"
+                                >
+
+                                    <i
+                                        class="w-3.5 h-3.5"
+                                        data-lucide="trash-2"
+                                    ></i>
+
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+
+                    {% if not tabungan %}
+
+                    <tr>
+
+                        <td
+                            colspan="4"
+                            class="px-6 py-8
+                                   text-center
+                                   text-slate-500"
+                        >
+
+                            Belum ada tabungan.
+                            Tentukan jumlah uang yang ingin kamu simpan di atas.
+
+                        </td>
+
+                    </tr>
+
+                    {% endif %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <div class="text-center text-xs text-slate-600 pb-4">
+
+        Pencatat Keuangan Bulanan
+
+    </div>
+
+
+</div>
+
+
+<!-- ============================================================
+     LUCIDE ICON
+============================================================ -->
+
+<script>
+    lucide.createIcons();
+</script>
+
+</body>
+</html>
