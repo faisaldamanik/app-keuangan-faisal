@@ -1,109 +1,72 @@
 <!DOCTYPE html>
-
 <html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-```
-<title>Pencatat Keuangan Bulanan</title>
+    <title>Pencatat Keuangan Bulanan</title>
 
-<script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 
-<link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet"
->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
 
-<script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-<style>
-    body {
-        font-family: 'Poppins', sans-serif;
-    }
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
 
-    input[type="date"],
-    input[type="month"] {
-        color-scheme: dark;
-    }
-</style>
-```
+        input[type="date"],
+        input[type="month"] {
+            color-scheme: dark;
+        }
 
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
 </head>
 
-<body class="bg-slate-950 text-slate-100 min-h-screen p-4 md:p-8">
+<body class="bg-slate-950 text-slate-100 min-h-screen">
 
-<div class="max-w-6xl mx-auto space-y-8">
+<div class="w-full max-w-7xl mx-auto px-3 py-4 sm:px-5 sm:py-6 lg:px-8 lg:py-8">
 
-```
-<!-- =====================================================
-     HEADER
-====================================================== -->
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
 
-<div class="bg-slate-900/80 p-5 md:p-6 rounded-2xl border border-slate-800 backdrop-blur-xl">
+    <header class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl">
 
-    <div class="flex flex-col lg:flex-row justify-between items-center gap-5">
+        <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-5">
 
-        <!-- LOGO / JUDUL -->
+            <!-- BRAND -->
 
-        <div class="flex items-center gap-4 w-full lg:w-auto">
+            <div class="flex items-center gap-3 min-w-0">
 
-            <div class="p-3.5 bg-emerald-500/10 text-emerald-400
-                        rounded-2xl border border-emerald-500/20">
-
-                <i class="w-8 h-8" data-lucide="wallet"></i>
-
-            </div>
-
-            <div>
-
-                <h1 class="text-2xl font-bold text-white">
-                    Pencatat Keuangan Bulanan
-                </h1>
-
-                <p class="text-sm text-slate-400">
-                    Atur gaji, pengeluaran, dan tabungan setiap bulan
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <!-- MENU USER -->
-
-        <div class="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
-
-            <!-- USER INFO -->
-
-            <div class="flex items-center gap-3
-                        px-4 py-2.5
-                        bg-slate-950
-                        border border-slate-700
-                        rounded-xl
-                        w-full sm:w-auto">
-
-                <div class="w-9 h-9 rounded-full
-                            bg-emerald-500/10
-                            border border-emerald-500/20
-                            flex items-center justify-center">
+                <div class="shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-2xl
+                            bg-emerald-500/10 border border-emerald-500/20
+                            flex items-center justify-center text-emerald-400">
 
                     <i
-                        class="w-4 h-4 text-emerald-400"
-                        data-lucide="user"
+                        data-lucide="wallet"
+                        class="w-6 h-6 sm:w-7 sm:h-7"
                     ></i>
 
                 </div>
 
                 <div class="min-w-0">
 
-                    <p class="text-xs text-slate-500">
-                        Login sebagai
-                    </p>
+                    <h1 class="text-lg sm:text-2xl font-bold text-white truncate">
+                        Pencatat Keuangan
+                    </h1>
 
-                    <p class="text-sm font-semibold text-white truncate">
-                        {{ username }}
+                    <p class="text-xs sm:text-sm text-slate-400">
+                        Kelola keuangan dengan lebih mudah
                     </p>
 
                 </div>
@@ -111,69 +74,93 @@
             </div>
 
 
-            <!-- LOGOUT -->
+            <!-- USER -->
 
-            <a
-                href="/logout"
-                onclick="return confirm('Yakin ingin keluar dari akun?')"
-                class="w-full sm:w-auto
-                       px-4 py-2.5
-                       bg-rose-500/10
-                       hover:bg-rose-500/20
-                       border border-rose-500/30
-                       text-rose-400
-                       rounded-xl
-                       text-sm font-semibold
-                       transition-all
-                       flex items-center
-                       justify-center gap-2"
-            >
+            <div class="flex flex-col sm:flex-row gap-2 w-full xl:w-auto">
 
-                <i
-                    class="w-4 h-4"
-                    data-lucide="log-out"
-                ></i>
+                <div class="flex items-center gap-3 px-3 sm:px-4 py-3
+                            bg-slate-950 border border-slate-800 rounded-xl
+                            min-w-0">
 
-                Logout
+                    <div class="shrink-0 w-9 h-9 rounded-full
+                                bg-emerald-500/10 border border-emerald-500/20
+                                flex items-center justify-center text-emerald-400">
 
-            </a>
+                        <i
+                            data-lucide="user"
+                            class="w-4 h-4"
+                        ></i>
+
+                    </div>
+
+                    <div class="min-w-0">
+
+                        <p class="text-[10px] sm:text-xs text-slate-500">
+                            Login sebagai
+                        </p>
+
+                        <p class="text-sm font-semibold text-white truncate">
+                            {{ username }}
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <a
+                    href="{{ url_for('logout') }}"
+                    onclick="return confirm('Yakin ingin keluar dari akun?')"
+                    class="flex items-center justify-center gap-2
+                           px-4 py-3 rounded-xl
+                           bg-rose-500/10 border border-rose-500/20
+                           text-rose-400 hover:bg-rose-500/20
+                           font-semibold text-sm transition"
+                >
+
+                    <i
+                        data-lucide="log-out"
+                        class="w-4 h-4"
+                    ></i>
+
+                    Logout
+
+                </a>
+
+            </div>
 
         </div>
 
-    </div>
 
+        <!-- =====================================================
+             FORM GAJI
+        ====================================================== -->
 
-    <!-- FORM GAJI -->
+        <div class="mt-5 pt-5 border-t border-slate-800">
 
-    <div class="mt-5 pt-5 border-t border-slate-800">
+            <div class="mb-3">
 
-        <div class="flex flex-col md:flex-row md:items-center
-                    justify-between gap-4">
-
-            <div>
-
-                <h2 class="text-sm font-semibold text-white">
+                <h2 class="font-semibold text-white text-sm sm:text-base">
                     Pengaturan Gaji
                 </h2>
 
-                <p class="text-xs text-slate-500 mt-1">
-                    Masukkan atau perbarui gaji bulan ini.
+                <p class="text-xs text-slate-500">
+                    Masukkan gaji yang kamu terima bulan ini.
                 </p>
 
             </div>
 
             <form
-                action="/update-gaji"
+                action="{{ url_for('set_gaji') }}"
                 method="POST"
-                class="flex items-center gap-2 w-full md:w-auto"
+                class="flex flex-col sm:flex-row gap-2"
             >
 
-                <div class="relative flex-1 md:w-64">
+                <div class="relative flex-1">
 
                     <span
-                        class="absolute inset-y-0 left-0 pl-3 flex
-                               items-center pointer-events-none
-                               text-slate-400 text-sm"
+                        class="absolute left-3 top-1/2 -translate-y-1/2
+                               text-slate-500 text-sm"
                     >
                         Rp
                     </span>
@@ -182,39 +169,37 @@
                         type="number"
                         name="gaji"
                         value="{{ gaji }}"
-                        placeholder="Masukkan Gaji"
                         min="0"
                         required
-                        class="w-full pl-10 pr-4 py-2.5
+                        inputmode="numeric"
+                        class="w-full pl-10 pr-4 py-3
                                bg-slate-950
                                border border-slate-700
                                rounded-xl
-                               text-sm text-white
+                               text-white text-sm
                                focus:outline-none
                                focus:border-emerald-500"
+                        placeholder="Contoh: 5000000"
                     >
 
                 </div>
 
                 <button
                     type="submit"
-                    class="px-4 py-2.5
-                           bg-emerald-500
-                           hover:bg-emerald-600
-                           text-slate-950
-                           font-semibold
-                           text-sm
-                           rounded-xl
-                           transition-all
-                           flex items-center gap-1"
+                    class="w-full sm:w-auto px-5 py-3
+                           bg-emerald-500 hover:bg-emerald-600
+                           text-slate-950 rounded-xl
+                           font-semibold text-sm
+                           flex items-center justify-center gap-2
+                           transition"
                 >
 
                     <i
-                        class="w-4 h-4"
                         data-lucide="check"
+                        class="w-4 h-4"
                     ></i>
 
-                    Set Gaji
+                    Simpan Gaji
 
                 </button>
 
@@ -222,87 +207,875 @@
 
         </div>
 
-    </div>
+    </header>
+
+
+    <!-- =====================================================
+         FLASH MESSAGE
+    ====================================================== -->
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% if messages %}
+
+            <div class="mt-4 space-y-2">
+
+                {% for category, message in messages %}
+
+                    <div
+                        class="
+                            rounded-xl px-4 py-3 text-sm border
+                            {% if category == 'danger' %}
+                                bg-rose-500/10
+                                text-rose-300
+                                border-rose-500/20
+                            {% else %}
+                                bg-emerald-500/10
+                                text-emerald-300
+                                border-emerald-500/20
+                            {% endif %}
+                        "
+                    >
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <!-- =====================================================
+         SUMMARY
+    ====================================================== -->
+
+    <section class="mt-5 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3 sm:gap-4">
+
+
+        <!-- GAJI -->
+
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
+
+            <div class="flex items-center gap-3">
+
+                <div class="shrink-0 p-3 rounded-xl
+                            bg-emerald-500/10 text-emerald-400">
+
+                    <i
+                        data-lucide="banknote"
+                        class="w-5 h-5"
+                    ></i>
+
+                </div>
+
+                <div class="min-w-0">
+
+                    <p class="text-xs text-slate-500">
+                        Gaji
+                    </p>
+
+                    <p class="text-base sm:text-lg font-bold
+                              text-emerald-400 truncate">
+
+                        {{ gaji|rupiah }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SISA SALDO -->
+
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
+
+            <div class="flex items-center gap-3">
+
+                <div class="shrink-0 p-3 rounded-xl
+                            bg-sky-500/10 text-sky-400">
+
+                    <i
+                        data-lucide="wallet-cards"
+                        class="w-5 h-5"
+                    ></i>
+
+                </div>
+
+                <div class="min-w-0">
+
+                    <p class="text-xs text-slate-500">
+                        Sisa Saldo
+                    </p>
+
+                    <p
+                        class="
+                            text-base sm:text-lg font-bold truncate
+                            {% if sisa_saldo >= 0 %}
+                                text-sky-400
+                            {% else %}
+                                text-rose-400
+                            {% endif %}
+                        "
+                    >
+
+                        {{ sisa_saldo|rupiah }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SUDAH DIBAYAR -->
+
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
+
+            <div class="flex items-center gap-3">
+
+                <div class="shrink-0 p-3 rounded-xl
+                            bg-indigo-500/10 text-indigo-400">
+
+                    <i
+                        data-lucide="circle-check"
+                        class="w-5 h-5"
+                    ></i>
+
+                </div>
+
+                <div class="min-w-0">
+
+                    <p class="text-xs text-slate-500">
+                        Sudah Dibayar
+                    </p>
+
+                    <p class="text-base sm:text-lg font-bold
+                              text-indigo-400 truncate">
+
+                        {{ total_dibayar|rupiah }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- BELUM DIBAYAR -->
+
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
+
+            <div class="flex items-center gap-3">
+
+                <div class="shrink-0 p-3 rounded-xl
+                            bg-amber-500/10 text-amber-400">
+
+                    <i
+                        data-lucide="clock-3"
+                        class="w-5 h-5"
+                    ></i>
+
+                </div>
+
+                <div class="min-w-0">
+
+                    <p class="text-xs text-slate-500">
+                        Belum Dibayar
+                    </p>
+
+                    <p class="text-base sm:text-lg font-bold
+                              text-amber-400 truncate">
+
+                        {{ total_belum_dibayar|rupiah }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- TABUNGAN -->
+
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4
+                    sm:col-span-2 xl:col-span-1">
+
+            <div class="flex items-center gap-3">
+
+                <div class="shrink-0 p-3 rounded-xl
+                            bg-purple-500/10 text-purple-400">
+
+                    <i
+                        data-lucide="piggy-bank"
+                        class="w-5 h-5"
+                    ></i>
+
+                </div>
+
+                <div class="min-w-0">
+
+                    <p class="text-xs text-slate-500">
+                        Total Tabungan
+                    </p>
+
+                    <p class="text-base sm:text-lg font-bold
+                              text-purple-400 truncate">
+
+                        {{ total_tabungan|rupiah }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         FORM TAMBAH DATA
+    ====================================================== -->
+
+    <section class="mt-5 grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+
+        <!-- TAMBAH PENGELUARAN -->
+
+        <div class="bg-slate-900 border border-slate-800
+                    rounded-2xl p-4 sm:p-5">
+
+            <div class="flex items-center gap-3 mb-5">
+
+                <div class="p-3 rounded-xl
+                            bg-rose-500/10 text-rose-400">
+
+                    <i
+                        data-lucide="receipt"
+                        class="w-5 h-5"
+                    ></i>
+
+                </div>
+
+                <div>
+
+                    <h2 class="font-bold text-white">
+                        Tambah Pengeluaran
+                    </h2>
+
+                    <p class="text-xs text-slate-500">
+                        Catat pengeluaran baru.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <form
+                action="{{ url_for('tambah_pengeluaran') }}"
+                method="POST"
+                class="space-y-3"
+            >
+
+                <div>
+
+                    <label class="block text-xs text-slate-400 mb-1.5">
+                        Nama Pengeluaran
+                    </label>
+
+                    <input
+                        type="text"
+                        name="nama"
+                        required
+                        class="w-full px-4 py-3
+                               bg-slate-950
+                               border border-slate-700
+                               rounded-xl
+                               text-sm text-white
+                               focus:outline-none
+                               focus:border-rose-500"
+                        placeholder="Contoh: Listrik"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label class="block text-xs text-slate-400 mb-1.5">
+                        Jumlah
+                    </label>
+
+                    <input
+                        type="number"
+                        name="jumlah"
+                        min="1"
+                        required
+                        inputmode="numeric"
+                        class="w-full px-4 py-3
+                               bg-slate-950
+                               border border-slate-700
+                               rounded-xl
+                               text-sm text-white
+                               focus:outline-none
+                               focus:border-rose-500"
+                        placeholder="Contoh: 250000"
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="w-full py-3 rounded-xl
+                           bg-rose-500 hover:bg-rose-600
+                           text-white font-semibold text-sm
+                           transition
+                           flex items-center justify-center gap-2"
+                >
+
+                    <i
+                        data-lucide="plus"
+                        class="w-4 h-4"
+                    ></i>
+
+                    Tambah Pengeluaran
+
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- TAMBAH TABUNGAN -->
+
+        <div class="bg-slate-900 border border-slate-800
+                    rounded-2xl p-4 sm:p-5">
+
+            <div class="flex items-center gap-3 mb-5">
+
+                <div class="p-3 rounded-xl
+                            bg-purple-500/10 text-purple-400">
+
+                    <i
+                        data-lucide="piggy-bank"
+                        class="w-5 h-5"
+                    ></i>
+
+                </div>
+
+                <div>
+
+                    <h2 class="font-bold text-white">
+                        Tambah Tabungan
+                    </h2>
+
+                    <p class="text-xs text-slate-500">
+                        Simpan uang untuk tujuanmu.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <form
+                action="{{ url_for('tambah_tabungan') }}"
+                method="POST"
+                class="space-y-3"
+            >
+
+                <div>
+
+                    <label class="block text-xs text-slate-400 mb-1.5">
+                        Bulan
+                    </label>
+
+                    <input
+                        type="text"
+                        name="bulan"
+                        value="{{ bulan_sekarang }}"
+                        class="w-full px-4 py-3
+                               bg-slate-950
+                               border border-slate-700
+                               rounded-xl
+                               text-sm text-white
+                               focus:outline-none
+                               focus:border-purple-500"
+                        placeholder="Contoh: Oktober 2026"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label class="block text-xs text-slate-400 mb-1.5">
+                        Jumlah
+                    </label>
+
+                    <input
+                        type="number"
+                        name="jumlah"
+                        min="1"
+                        required
+                        inputmode="numeric"
+                        class="w-full px-4 py-3
+                               bg-slate-950
+                               border border-slate-700
+                               rounded-xl
+                               text-sm text-white
+                               focus:outline-none
+                               focus:border-purple-500"
+                        placeholder="Contoh: 500000"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label class="block text-xs text-slate-400 mb-1.5">
+                        Catatan
+                    </label>
+
+                    <input
+                        type="text"
+                        name="catatan"
+                        class="w-full px-4 py-3
+                               bg-slate-950
+                               border border-slate-700
+                               rounded-xl
+                               text-sm text-white
+                               focus:outline-none
+                               focus:border-purple-500"
+                        placeholder="Contoh: Dana darurat"
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="w-full py-3 rounded-xl
+                           bg-purple-500 hover:bg-purple-600
+                           text-white font-semibold text-sm
+                           transition
+                           flex items-center justify-center gap-2"
+                >
+
+                    <i
+                        data-lucide="plus"
+                        class="w-4 h-4"
+                    ></i>
+
+                    Tambah Tabungan
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         DAFTAR PENGELUARAN
+    ====================================================== -->
+
+    <section
+        class="mt-5 bg-slate-900 border border-slate-800
+               rounded-2xl overflow-hidden"
+    >
+
+        <div class="p-4 sm:p-5 border-b border-slate-800">
+
+            <div class="flex items-center justify-between gap-3">
+
+                <div>
+
+                    <h2 class="font-bold text-white">
+                        Daftar Pengeluaran
+                    </h2>
+
+                    <p class="text-xs text-slate-500 mt-1">
+                        Kelola semua pengeluaran kamu.
+                    </p>
+
+                </div>
+
+                <span
+                    class="shrink-0 px-3 py-1.5 rounded-full
+                           bg-slate-800 text-xs text-slate-400"
+                >
+                    {{ pengeluaran|length }} data
+                </span>
+
+            </div>
+
+        </div>
+
+
+        {% if pengeluaran %}
+
+        <!--
+            Di HP tabel boleh scroll horizontal.
+            Ini lebih baik daripada kolom dipaksa mengecil.
+        -->
+
+        <div class="overflow-x-auto">
+
+            <table class="w-full min-w-[700px] text-sm">
+
+                <thead class="bg-slate-950">
+
+                    <tr class="text-left text-xs text-slate-500">
+
+                        <th class="px-5 py-3 font-medium">
+                            Pengeluaran
+                        </th>
+
+                        <th class="px-5 py-3 font-medium">
+                            Jumlah
+                        </th>
+
+                        <th class="px-5 py-3 font-medium">
+                            Status
+                        </th>
+
+                        <th class="px-5 py-3 font-medium text-right">
+                            Aksi
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody class="divide-y divide-slate-800">
+
+                    {% for item in pengeluaran %}
+
+                    <tr class="hover:bg-slate-800/40 transition">
+
+                        <td class="px-5 py-4">
+
+                            <div class="font-medium text-white">
+                                {{ item.nama }}
+                            </div>
+
+                            <div class="text-xs text-slate-500 mt-1">
+                                {{ item.tanggal.strftime('%d-%m-%Y %H:%M') }}
+                            </div>
+
+                        </td>
+
+
+                        <td class="px-5 py-4 font-semibold text-white">
+                            {{ item.jumlah|rupiah }}
+                        </td>
+
+
+                        <td class="px-5 py-4">
+
+                            {% if item.status == "Sudah Dibayar" %}
+
+                                <span
+                                    class="inline-flex items-center gap-1
+                                           px-2.5 py-1 rounded-full
+                                           bg-emerald-500/10
+                                           text-emerald-400
+                                           text-xs font-medium"
+                                >
+
+                                    <i
+                                        data-lucide="check"
+                                        class="w-3 h-3"
+                                    ></i>
+
+                                    Sudah Dibayar
+
+                                </span>
+
+                            {% else %}
+
+                                <span
+                                    class="inline-flex items-center gap-1
+                                           px-2.5 py-1 rounded-full
+                                           bg-amber-500/10
+                                           text-amber-400
+                                           text-xs font-medium"
+                                >
+
+                                    <i
+                                        data-lucide="clock-3"
+                                        class="w-3 h-3"
+                                    ></i>
+
+                                    Belum Dibayar
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td class="px-5 py-4">
+
+                            <div class="flex justify-end gap-2">
+
+                                <a
+                                    href="{{ url_for('toggle_pengeluaran', id=item.id) }}"
+                                    class="px-3 py-2 rounded-lg
+                                           bg-slate-800 hover:bg-slate-700
+                                           text-xs text-slate-300 transition"
+                                >
+                                    Toggle
+                                </a>
+
+                                <a
+                                    href="{{ url_for('hapus_pengeluaran', id=item.id) }}"
+                                    onclick="return confirm('Hapus pengeluaran ini?')"
+                                    class="px-3 py-2 rounded-lg
+                                           bg-rose-500/10
+                                           hover:bg-rose-500/20
+                                           text-xs text-rose-400 transition"
+                                >
+                                    Hapus
+                                </a>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="p-10 text-center">
+
+            <div
+                class="inline-flex p-4 rounded-2xl
+                       bg-slate-800 text-slate-500 mb-3"
+            >
+
+                <i
+                    data-lucide="receipt"
+                    class="w-7 h-7"
+                ></i>
+
+            </div>
+
+            <p class="font-medium text-slate-300">
+                Belum ada pengeluaran
+            </p>
+
+            <p class="text-xs text-slate-500 mt-1">
+                Tambahkan pengeluaran pertama kamu di atas.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- =====================================================
+         RIWAYAT TABUNGAN
+    ====================================================== -->
+
+    <section
+        class="mt-5 bg-slate-900 border border-slate-800
+               rounded-2xl overflow-hidden"
+    >
+
+        <div class="p-4 sm:p-5 border-b border-slate-800">
+
+            <div class="flex items-center justify-between gap-3">
+
+                <div>
+
+                    <h2 class="font-bold text-white">
+                        Riwayat Tabungan
+                    </h2>
+
+                    <p class="text-xs text-slate-500 mt-1">
+                        Semua tabungan yang pernah kamu masukkan.
+                    </p>
+
+                </div>
+
+                <span
+                    class="shrink-0 px-3 py-1.5 rounded-full
+                           bg-slate-800 text-xs text-slate-400"
+                >
+                    {{ tabungan|length }} data
+                </span>
+
+            </div>
+
+        </div>
+
+
+        {% if tabungan %}
+
+        <div class="overflow-x-auto">
+
+            <table class="w-full min-w-[650px] text-sm">
+
+                <thead class="bg-slate-950">
+
+                    <tr class="text-left text-xs text-slate-500">
+
+                        <th class="px-5 py-3 font-medium">
+                            Bulan
+                        </th>
+
+                        <th class="px-5 py-3 font-medium">
+                            Jumlah
+                        </th>
+
+                        <th class="px-5 py-3 font-medium">
+                            Catatan
+                        </th>
+
+                        <th class="px-5 py-3 font-medium text-right">
+                            Aksi
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody class="divide-y divide-slate-800">
+
+                    {% for item in tabungan %}
+
+                    <tr class="hover:bg-slate-800/40 transition">
+
+                        <td class="px-5 py-4 text-white font-medium">
+                            {{ item.bulan }}
+                        </td>
+
+                        <td class="px-5 py-4 text-purple-400 font-semibold">
+                            {{ item.jumlah|rupiah }}
+                        </td>
+
+                        <td class="px-5 py-4 text-slate-400">
+                            {{ item.catatan or "-" }}
+                        </td>
+
+                        <td class="px-5 py-4 text-right">
+
+                            <a
+                                href="{{ url_for('hapus_tabungan', id=item.id) }}"
+                                onclick="return confirm('Hapus tabungan ini?')"
+                                class="inline-flex px-3 py-2 rounded-lg
+                                       bg-rose-500/10
+                                       hover:bg-rose-500/20
+                                       text-xs text-rose-400 transition"
+                            >
+                                Hapus
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="p-10 text-center">
+
+            <div
+                class="inline-flex p-4 rounded-2xl
+                       bg-slate-800 text-slate-500 mb-3"
+            >
+
+                <i
+                    data-lucide="piggy-bank"
+                    class="w-7 h-7"
+                ></i>
+
+            </div>
+
+            <p class="font-medium text-slate-300">
+                Belum ada tabungan
+            </p>
+
+            <p class="text-xs text-slate-500 mt-1">
+                Tambahkan tabungan pertama kamu di atas.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="text-center py-6 text-xs text-slate-600">
+
+        Pencatat Keuangan Bulanan
+
+        <span class="mx-1">•</span>
+
+        Login sebagai
+
+        <span class="text-slate-400">
+            {{ username }}
+        </span>
+
+    </footer>
 
 </div>
 
 
 <!-- =====================================================
-     SUMMARY
+     LUCIDE ICON
 ====================================================== -->
 
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+<script>
+    lucide.createIcons();
+</script>
 
-    <!-- GAJI -->
-
-    <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800
-                flex items-center gap-4">
-
-        <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl">
-
-            <i class="w-6 h-6" data-lucide="banknote"></i>
-
-        </div>
-
-        <div>
-
-            <p class="text-xs font-medium text-slate-400">
-                Gaji Bulan Ini
-            </p>
-
-            <h3 class="text-xl font-bold text-emerald-400 mt-0.5">
-                Rp {{ "{:,.0f}".format(gaji) }}
-            </h3>
-
-        </div>
-
-    </div>
-
-
-    <!-- SISA SALDO -->
-
-    <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800
-                flex items-center gap-4">
-
-        <div class="p-3 bg-sky-500/10 text-sky-400 rounded-xl">
-
-            <i class="w-6 h-6" data-lucide="wallet-cards"></i>
-
-        </div>
-
-        <div>
-
-            <p class="text-xs font-medium text-slate-400">
-                Sisa Saldo
-            </p>
-
-            <h3
-                class="text-xl font-bold
-                {% if sisa_saldo >= 0 %}
-                    text-sky-400
-                {% else %}
-                    text-rose-400
-                {% endif %}
-                mt-0.5"
-            >
-                Rp {{ "{:,.0f}".format(sisa_saldo) }}
-            </h3>
-
-        </div>
-
-    </div>
-
-
-    <!-- SUDAH DIBAYAR -->
-
-    <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800
-                flex items-center gap-4">
-
-        <div class="p-3 bg-indigo-500/10 text-indigo-400 rounded-xl">
-
-            <i class="w-6 h-6" data-lucide="check-circle-2"></i>
-
-        </div>
-
-        <
-```
+</body>
+</html>

@@ -14,15 +14,15 @@ from flask_login import (
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
-app = Flask(__name__)
+# =========================================================
+# APP
+# =========================================================
 
-# =========================================================
-# KONFIGURASI
-# =========================================================
+app = Flask(__name__)
 
 app.config["SECRET_KEY"] = os.environ.get(
     "SECRET_KEY",
-    "rahasia-faisal-123"
+    "dev-secret-change-this"
 )
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
@@ -32,8 +32,11 @@ if not DATABASE_URL:
         "DATABASE_URL belum diset. Tambahkan DATABASE_URL di environment."
     )
 
-# Supabase / PostgreSQL URL
-# Pastikan menggunakan driver Psycopg 3
+
+# =========================================================
+# DATABASE URL - PSYCOPG 3
+# =========================================================
+
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace(
         "postgres://",
@@ -48,8 +51,13 @@ elif DATABASE_URL.startswith("postgresql://"):
         1
     )
 
+
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+    "pool_pre_ping": True,
+    "pool_recycle": 300,
+}
 
 
 # =========================================================
@@ -66,6 +74,19 @@ db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
+
+
+# =========================================================
+# HELPER FORMAT RUPIAH
+# =========================================================
+
+@app.template_filter("rupiah")
+def rupiah(value):
+    try:
+        value = float(value or 0)
+        return "Rp " + f"{value:,.0f}".replace(",", ".")
+    except (ValueError, TypeError):
+        return "Rp 0"
 
 
 # =========================================================
@@ -178,7 +199,7 @@ class Tabungan(db.Model):
 
 
 # =========================================================
-# LOGIN MANAGER
+# USER LOADER
 # =========================================================
 
 @login_manager.user_loader
@@ -210,12 +231,24 @@ def register():
 
         if not username or not password:
             flash(
-                "Username dan password wajib diisi."
+                "Username dan password wajib diisi.",
+                "danger"
             )
+            return redirect(url_for("register"))
 
-            return redirect(
-                url_for("register")
+        if len(username) < 3:
+            flash(
+                "Username minimal 3 karakter.",
+                "danger"
             )
+            return redirect(url_for("register"))
+
+        if len(password) < 6:
+            flash(
+                "Password minimal 6 karakter.",
+                "danger"
+            )
+            return redirect(url_for("register"))
 
         user_lama = User.query.filter_by(
             username=username
@@ -223,12 +256,10 @@ def register():
 
         if user_lama:
             flash(
-                "Username sudah digunakan."
+                "Username sudah digunakan.",
+                "danger"
             )
-
-            return redirect(
-                url_for("register")
-            )
+            return redirect(url_for("register"))
 
         password_hash = generate_password_hash(
             password
@@ -244,16 +275,13 @@ def register():
         db.session.commit()
 
         flash(
-            "Registrasi berhasil. Silakan login."
+            "Registrasi berhasil. Silakan login.",
+            "success"
         )
 
-        return redirect(
-            url_for("login")
-        )
+        return redirect(url_for("login"))
 
-    return render_template(
-        "register.html"
-    )
+    return render_template("register.html")
 
 
 # =========================================================
@@ -285,17 +313,14 @@ def login():
         ):
             login_user(user)
 
-            return redirect(
-                url_for("index")
-            )
+            return redirect(url_for("index"))
 
         flash(
-            "Username atau password salah."
+            "Username atau password salah.",
+            "danger"
         )
 
-    return render_template(
-        "login.html"
-    )
+    return render_template("login.html")
 
 
 # =========================================================
@@ -308,9 +333,12 @@ def logout():
 
     logout_user()
 
-    return redirect(
-        url_for("login")
+    flash(
+        "Kamu sudah logout.",
+        "success"
     )
+
+    return redirect(url_for("login"))
 
 
 # =========================================================
@@ -352,6 +380,8 @@ def index():
         for item in tabungan
     )
 
+    # Sisa saldo setelah pengeluaran yang SUDAH dibayar
+    # dan tabungan dikurangi dari gaji.
     sisa_uang = (
         gaji
         - total_dibayar
@@ -371,7 +401,10 @@ def index():
         total_dibayar=total_dibayar,
         total_belum_dibayar=total_belum_dibayar,
         total_tabungan=total_tabungan,
-        sisa_uang=sisa_uang,
+
+        # KIRIM DENGAN NAMA YANG DIPAKAI TEMPLATE
+        sisa_saldo=sisa_uang,
+
         bulan_sekarang=bulan_sekarang
     )
 
@@ -385,6 +418,7 @@ def index():
 def set_gaji():
 
     try:
+
         gaji = float(
             request.form.get(
                 "gaji",
@@ -400,17 +434,18 @@ def set_gaji():
         db.session.commit()
 
         flash(
-            "Gaji berhasil diperbarui."
+            "Gaji berhasil diperbarui.",
+            "success"
         )
 
     except ValueError:
+
         flash(
-            "Nominal gaji tidak valid."
+            "Nominal gaji tidak valid.",
+            "danger"
         )
 
-    return redirect(
-        url_for("index")
-    )
+    return redirect(url_for("index"))
 
 
 # =========================================================
@@ -436,18 +471,17 @@ def tambah_pengeluaran():
                 0
             )
         )
-    except ValueError:
+    except (ValueError, TypeError):
         jumlah = 0
 
     if not nama or jumlah <= 0:
 
         flash(
-            "Data pengeluaran tidak valid."
+            "Data pengeluaran tidak valid.",
+            "danger"
         )
 
-        return redirect(
-            url_for("index")
-        )
+        return redirect(url_for("index"))
 
     pengeluaran = Pengeluaran(
         nama=nama,
@@ -462,9 +496,12 @@ def tambah_pengeluaran():
 
     db.session.commit()
 
-    return redirect(
-        url_for("index")
+    flash(
+        "Pengeluaran berhasil ditambahkan.",
+        "success"
     )
+
+    return redirect(url_for("index"))
 
 
 # =========================================================
@@ -492,9 +529,7 @@ def toggle_pengeluaran(id):
 
     db.session.commit()
 
-    return redirect(
-        url_for("index")
-    )
+    return redirect(url_for("index"))
 
 
 # =========================================================
@@ -518,9 +553,12 @@ def hapus_pengeluaran(id):
 
     db.session.commit()
 
-    return redirect(
-        url_for("index")
+    flash(
+        "Pengeluaran berhasil dihapus.",
+        "success"
     )
+
+    return redirect(url_for("index"))
 
 
 # =========================================================
@@ -551,11 +589,10 @@ def tambah_tabungan():
                 0
             )
         )
-    except ValueError:
+    except (ValueError, TypeError):
         jumlah = 0
 
     if not bulan:
-
         bulan = datetime.now().strftime(
             "%B %Y"
         )
@@ -563,12 +600,11 @@ def tambah_tabungan():
     if jumlah <= 0:
 
         flash(
-            "Nominal tabungan tidak valid."
+            "Nominal tabungan tidak valid.",
+            "danger"
         )
 
-        return redirect(
-            url_for("index")
-        )
+        return redirect(url_for("index"))
 
     tabungan = Tabungan(
         bulan=bulan,
@@ -583,9 +619,12 @@ def tambah_tabungan():
 
     db.session.commit()
 
-    return redirect(
-        url_for("index")
+    flash(
+        "Tabungan berhasil ditambahkan.",
+        "success"
     )
+
+    return redirect(url_for("index"))
 
 
 # =========================================================
@@ -609,20 +648,19 @@ def hapus_tabungan(id):
 
     db.session.commit()
 
-    return redirect(
-        url_for("index")
+    flash(
+        "Tabungan berhasil dihapus.",
+        "success"
     )
+
+    return redirect(url_for("index"))
 
 
 # =========================================================
-# JALANKAN APLIKASI
+# RUN LOCAL
 # =========================================================
 
 if __name__ == "__main__":
-
-    # Buat tabel hanya ketika menjalankan
-    # aplikasi secara langsung dengan:
-    # python app.py
 
     with app.app_context():
         db.create_all()
