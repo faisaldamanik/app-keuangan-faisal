@@ -3,930 +3,176 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0d1120">
+    <title>Masuk - Pencatat Keuangan</title>
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <meta
-        name="theme-color"
-        content="#020617"
-    >
-
-    <title>Login - Pencatat Keuangan</title>
-
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Google Fonts -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet"
-    >
-
-    <!-- Lucide Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+                        display: ['Fraunces', 'Georgia', 'serif']
+                    },
+                    colors: {
+                        ink: '#0d1120',
+                        panel: '#141a2c',
+                        raise: '#1a2136',
+                        line: '#252d47',
+                        ivory: '#ece9e1',
+                        mute: '#8a92ab',
+                        gold: '#d9b86f',
+                        sage: '#7fbfa8',
+                        rose: '#e88c8c'
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        /* =========================
-           GLOBAL
-        ========================= */
+        body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+        * { -webkit-tap-highlight-color: transparent; }
 
-        * {
-            box-sizing: border-box;
+        .field {
+            width: 100%; height: 3.25rem; padding: 0 2.75rem;
+            font-size: .875rem; color: #ece9e1;
+            background: #0d1120;
+            border: 1px solid #252d47; border-radius: .875rem;
+            transition: border-color .15s, box-shadow .15s;
         }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #020617;
-            color: #f8fafc;
-            overflow-x: hidden;
+        .field::placeholder { color: #5b6380; }
+        .field:hover { border-color: #3a4466; }
+        .field:focus {
+            outline: none; border-color: #d9b86f;
+            box-shadow: 0 0 0 3px rgba(217, 184, 111, .15);
         }
+        :focus-visible { outline: 2px solid #d9b86f; outline-offset: 2px; }
 
-        ::selection {
-            background: rgba(16, 185, 129, 0.35);
-            color: white;
+        .card-in { animation: rise .5s cubic-bezier(.2, .8, .2, 1) both; }
+        @keyframes rise {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
-
-
-        /* =========================
-           BACKGROUND
-        ========================= */
-
-        .background-glow {
-            position: fixed;
-            width: 450px;
-            height: 450px;
-            border-radius: 50%;
-            filter: blur(120px);
-            opacity: 0.18;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .glow-green {
-            background: #10b981;
-            top: -180px;
-            left: -150px;
-            animation: floatGlow 12s ease-in-out infinite;
-        }
-
-        .glow-blue {
-            background: #2563eb;
-            bottom: -200px;
-            right: -150px;
-            animation: floatGlow 15s ease-in-out infinite reverse;
-        }
-
-        .glow-purple {
-            background: #8b5cf6;
-            top: 35%;
-            right: -300px;
-            opacity: 0.08;
-        }
-
-        .background-grid {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            opacity: 0.13;
-
-            background-image:
-                linear-gradient(
-                    rgba(148, 163, 184, 0.12) 1px,
-                    transparent 1px
-                ),
-                linear-gradient(
-                    90deg,
-                    rgba(148, 163, 184, 0.12) 1px,
-                    transparent 1px
-                );
-
-            background-size: 55px 55px;
-
-            mask-image: linear-gradient(
-                to bottom,
-                black,
-                transparent 90%
-            );
-        }
-
-
-        /* =========================
-           LOGIN CONTAINER
-        ========================= */
-
-        .login-wrapper {
-            position: relative;
-            z-index: 1;
-            animation: fadeUp 0.8s ease both;
-        }
-
-        .login-card {
-            position: relative;
-            overflow: hidden;
-
-            background: rgba(15, 23, 42, 0.78);
-
-            border: 1px solid rgba(148, 163, 184, 0.15);
-
-            border-radius: 28px;
-
-            box-shadow:
-                0 30px 100px rgba(0, 0, 0, 0.35),
-                0 0 40px rgba(16, 185, 129, 0.035);
-
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-        }
-
-        .login-card::before {
-            content: "";
-
-            position: absolute;
-            top: 0;
-            left: 10%;
-            right: 10%;
-            height: 1px;
-
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(52, 211, 153, 0.8),
-                transparent
-            );
-        }
-
-
-        /* =========================
-           LOGO
-        ========================= */
-
-        .logo-box {
-            position: relative;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            width: 68px;
-            height: 68px;
-
-            margin: 0 auto;
-
-            border-radius: 22px;
-
-            color: #6ee7b7;
-
-            background: linear-gradient(
-                145deg,
-                rgba(16, 185, 129, 0.18),
-                rgba(16, 185, 129, 0.04)
-            );
-
-            border: 1px solid rgba(52, 211, 153, 0.25);
-
-            box-shadow:
-                0 0 35px rgba(16, 185, 129, 0.12),
-                inset 0 0 20px rgba(16, 185, 129, 0.04);
-
-            transition: 0.4s ease;
-        }
-
-        .logo-box:hover {
-            transform: translateY(-4px) rotate(-5deg);
-
-            box-shadow:
-                0 0 45px rgba(16, 185, 129, 0.22);
-        }
-
-
-        /* =========================
-           INPUT
-        ========================= */
-
-        .input-group {
-            position: relative;
-        }
-
-        .input-icon {
-            position: absolute;
-
-            left: 17px;
-            top: 50%;
-
-            transform: translateY(-50%);
-
-            width: 19px;
-            height: 19px;
-
-            color: #64748b;
-
-            pointer-events: none;
-
-            transition: color 0.25s ease;
-        }
-
-        .form-input {
-            width: 100%;
-
-            height: 56px;
-
-            padding: 0 48px 0 48px;
-
-            font-size: 14px;
-
-            color: #f8fafc;
-
-            background: rgba(2, 6, 23, 0.55);
-
-            border: 1px solid #293548;
-
-            border-radius: 15px;
-
-            outline: none;
-
-            transition:
-                border-color 0.25s ease,
-                box-shadow 0.25s ease,
-                background 0.25s ease;
-        }
-
-        .form-input::placeholder {
-            color: #64748b;
-        }
-
-        .form-input:hover {
-            border-color: #475569;
-        }
-
-        .form-input:focus {
-            background: rgba(2, 6, 23, 0.85);
-
-            border-color: #10b981;
-
-            box-shadow:
-                0 0 0 4px rgba(16, 185, 129, 0.10),
-                0 0 25px rgba(16, 185, 129, 0.04);
-        }
-
-        .input-group:focus-within .input-icon {
-            color: #34d399;
-        }
-
-        .password-toggle {
-            position: absolute;
-
-            right: 15px;
-            top: 50%;
-
-            transform: translateY(-50%);
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            padding: 5px;
-
-            color: #64748b;
-
-            background: transparent;
-            border: none;
-
-            cursor: pointer;
-
-            transition: color 0.2s ease;
-        }
-
-        .password-toggle:hover {
-            color: #6ee7b7;
-        }
-
-
-        /* =========================
-           LOGIN BUTTON
-        ========================= */
-
-        .login-button {
-            position: relative;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-
-            width: 100%;
-            min-height: 56px;
-
-            overflow: hidden;
-
-            color: #022c22;
-
-            font-size: 14px;
-            font-weight: 800;
-
-            background: linear-gradient(
-                110deg,
-                #34d399,
-                #10b981,
-                #059669
-            );
-
-            border: 1px solid rgba(110, 231, 183, 0.5);
-
-            border-radius: 15px;
-
-            cursor: pointer;
-
-            box-shadow:
-                0 8px 25px rgba(16, 185, 129, 0.15);
-
-            transition:
-                transform 0.25s ease,
-                box-shadow 0.25s ease,
-                filter 0.25s ease;
-        }
-
-        .login-button::before {
-            content: "";
-
-            position: absolute;
-
-            top: 0;
-            left: -120%;
-
-            width: 70%;
-            height: 100%;
-
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(255, 255, 255, 0.28),
-                transparent
-            );
-
-            transform: skewX(-20deg);
-
-            transition: left 0.6s ease;
-        }
-
-        .login-button:hover {
-            transform: translateY(-2px);
-
-            filter: brightness(1.05);
-
-            box-shadow:
-                0 12px 35px rgba(16, 185, 129, 0.25);
-        }
-
-        .login-button:hover::before {
-            left: 140%;
-        }
-
-        .login-button:active {
-            transform: scale(0.985);
-        }
-
-        .login-button span,
-        .login-button svg {
-            position: relative;
-            z-index: 1;
-        }
-
-
-        /* =========================
-           REGISTER LINK
-        ========================= */
-
-        .register-link {
-            color: #6ee7b7;
-
-            font-weight: 700;
-
-            text-decoration: none;
-
-            transition:
-                color 0.2s ease,
-                text-shadow 0.2s ease;
-        }
-
-        .register-link:hover {
-            color: #a7f3d0;
-
-            text-shadow:
-                0 0 15px rgba(52, 211, 153, 0.2);
-        }
-
-
-        /* =========================
-           FLASH MESSAGE
-        ========================= */
-
-        .flash-message {
-            padding: 14px 16px;
-
-            border-radius: 13px;
-
-            font-size: 13px;
-            line-height: 1.6;
-
-            animation: fadeUp 0.35s ease both;
-        }
-
-
-        /* =========================
-           DIVIDER
-        ========================= */
-
-        .divider {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .divider::before,
-        .divider::after {
-            content: "";
-
-            flex: 1;
-
-            height: 1px;
-
-            background: #263244;
-        }
-
-
-        /* =========================
-           ANIMATIONS
-        ========================= */
-
-        @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(22px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes floatGlow {
-            0%, 100% {
-                transform: translate(0, 0);
-            }
-
-            50% {
-                transform: translate(35px, 25px);
-            }
-        }
-
-
-        /* =========================
-           RESPONSIVE
-        ========================= */
-
-        @media (max-width: 480px) {
-            .login-card {
-                border-radius: 23px;
-            }
-
-            .logo-box {
-                width: 60px;
-                height: 60px;
-
-                border-radius: 19px;
-            }
-
-            .form-input {
-                height: 53px;
-            }
-
-            .login-button {
-                min-height: 53px;
-            }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            *,
-            *::before,
-            *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                scroll-behavior: auto !important;
-                transition-duration: 0.01ms !important;
-            }
-        }
-
+        @media (prefers-reduced-motion: reduce) { .card-in { animation: none; } }
     </style>
 </head>
 
+<body class="bg-ink text-ivory min-h-screen antialiased">
 
-<body class="min-h-screen">
+<main class="min-h-screen flex items-center justify-center px-4 py-10">
 
-    <!-- BACKGROUND EFFECTS -->
+    <div class="card-in w-full max-w-md">
 
-    <div class="background-glow glow-green"></div>
-    <div class="background-glow glow-blue"></div>
-    <div class="background-glow glow-purple"></div>
-
-    <div class="background-grid"></div>
-
-
-    <!-- MAIN CONTAINER -->
-
-    <main class="relative z-10 min-h-screen flex items-center justify-center px-4 py-10">
-
-        <div class="login-wrapper w-full max-w-md">
-
-
-            <!-- BRAND -->
-
-            <div class="text-center mb-8">
-
-                <div class="logo-box mb-5">
-
-                    <i
-                        data-lucide="wallet"
-                        class="w-8 h-8"
-                    ></i>
-
-                </div>
-
-
-                <div class="flex items-center justify-center gap-2 mb-3">
-
-                    <span class="text-2xl sm:text-3xl font-extrabold tracking-tight">
-                        Pencatat
-                        <span class="text-emerald-400">
-                            Keuangan
-                        </span>
-                    </span>
-
-                </div>
-
-
-                <p class="text-sm text-slate-400 leading-relaxed">
-                    Atur keuanganmu hari ini,
-                    <br class="sm:hidden">
-                    wujudkan tujuanmu di masa depan.
-                </p>
-
-
-                <div class="flex items-center justify-center gap-2 mt-5">
-
-                    <span class="relative flex h-2 w-2">
-
-                        <span class="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60 animate-ping"></span>
-
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
-
-                    </span>
-
-                    <span class="text-xs text-slate-500 font-medium">
-                        Kelola uang dengan lebih cerdas
-                    </span>
-
-                </div>
-
+        <!-- BRAND -->
+        <div class="text-center mb-8">
+            <div class="mx-auto w-12 h-12 rounded-2xl bg-gold text-ink flex items-center justify-center">
+                <i data-lucide="wallet" class="w-6 h-6"></i>
             </div>
-
-
-
-            <!-- LOGIN CARD -->
-
-            <section class="login-card p-6 sm:p-8">
-
-
-                <!-- HEADER -->
-
-                <div class="mb-7">
-
-                    <p class="text-xs font-bold uppercase tracking-[0.2em] text-emerald-400 mb-3">
-                        Selamat datang kembali
-                    </p>
-
-                    <h1 class="text-2xl font-extrabold tracking-tight">
-                        Masuk ke akunmu
-                    </h1>
-
-                    <p class="text-sm text-slate-400 mt-2 leading-relaxed">
-                        Masukkan username dan password untuk melanjutkan.
-                    </p>
-
-                </div>
-
-
-
-                <!-- FLASH MESSAGE -->
-
-                {% with messages = get_flashed_messages(with_categories=true) %}
-
-                    {% if messages %}
-
-                        <div class="space-y-3 mb-6">
-
-                            {% for category, message in messages %}
-
-                                <div
-                                    role="alert"
-                                    class="flash-message flex items-start gap-3 border
-                                    {% if category == 'danger' %}
-                                        bg-rose-500/10
-                                        text-rose-300
-                                        border-rose-500/20
-                                    {% else %}
-                                        bg-emerald-500/10
-                                        text-emerald-300
-                                        border-emerald-500/20
-                                    {% endif %}"
-                                >
-
-                                    <i
-                                        data-lucide="{% if category == 'danger' %}alert-circle{% else %}check-circle{% endif %}"
-                                        class="w-5 h-5 shrink-0 mt-0.5"
-                                    ></i>
-
-                                    <span>{{ message }}</span>
-
-                                </div>
-
-                            {% endfor %}
-
-                        </div>
-
-                    {% endif %}
-
-                {% endwith %}
-
-
-
-                <!-- LOGIN FORM -->
-
-                <form
-                    action="{{ url_for('login') }}"
-                    method="POST"
-                    class="space-y-5"
-                >
-
-                    <!-- USERNAME -->
-
-                    <div>
-
-                        <label
-                            for="username"
-                            class="block text-sm font-semibold text-slate-300 mb-2.5"
-                        >
-                            Username
-                        </label>
-
-                        <div class="input-group">
-
-                            <i
-                                data-lucide="user-round"
-                                class="input-icon"
-                            ></i>
-
-                            <input
-                                id="username"
-                                type="text"
-                                name="username"
-                                autocomplete="username"
-                                autocapitalize="none"
-                                spellcheck="false"
-                                required
-                                autofocus
-                                class="form-input"
-                                placeholder="Masukkan username"
-                            >
-
-                        </div>
-
-                    </div>
-
-
-
-                    <!-- PASSWORD -->
-
-                    <div>
-
-                        <div class="flex items-center justify-between mb-2.5">
-
-                            <label
-                                for="password"
-                                class="block text-sm font-semibold text-slate-300"
-                            >
-                                Password
-                            </label>
-
-                            <span class="text-xs text-slate-500">
-                                Akun kamu aman
-                            </span>
-
-                        </div>
-
-
-                        <div class="input-group">
-
-                            <i
-                                data-lucide="lock-keyhole"
-                                class="input-icon"
-                            ></i>
-
-                            <input
-                                id="password"
-                                type="password"
-                                name="password"
-                                autocomplete="current-password"
-                                required
-                                class="form-input"
-                                placeholder="Masukkan password"
-                            >
-
-
-                            <!-- TOGGLE PASSWORD -->
-
-                            <button
-                                type="button"
-                                id="togglePassword"
-                                class="password-toggle"
-                                aria-label="Tampilkan password"
-                                aria-pressed="false"
-                            >
-
-                                <i
-                                    data-lucide="eye"
-                                    id="eyeIcon"
-                                    class="w-5 h-5"
-                                ></i>
-
-                            </button>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <!-- LOGIN BUTTON -->
-
-                    <div class="pt-2">
-
-                        <button
-                            type="submit"
-                            class="login-button"
-                        >
-
-                            <span>Masuk ke Dashboard</span>
-
-                            <i
-                                data-lucide="arrow-right"
-                                class="w-5 h-5"
-                            ></i>
-
-                        </button>
-
-                    </div>
-
-                </form>
-
-
-
-                <!-- DIVIDER -->
-
-                <div class="divider my-7">
-
-                    <span class="text-xs text-slate-500 whitespace-nowrap">
-                        Belum menjadi anggota?
-                    </span>
-
-                </div>
-
-
-
-                <!-- REGISTER -->
-
-                <div class="text-center">
-
-                    <a
-                        href="{{ url_for('register') }}"
-                        class="register-link inline-flex items-center justify-center gap-2 text-sm"
-                    >
-
-                        <i
-                            data-lucide="user-plus"
-                            class="w-4 h-4"
-                        ></i>
-
-                        Buat akun baru
-
-                    </a>
-
-                </div>
-
-
-            </section>
-
-
-
-            <!-- FOOTER -->
-
-            <footer class="mt-7 text-center">
-
-                <div class="flex items-center justify-center gap-2 text-slate-600">
-
-                    <i
-                        data-lucide="shield-check"
-                        class="w-4 h-4"
-                    ></i>
-
-                    <span class="text-xs">
-                        Pencatat Keuangan Bulanan
-                    </span>
-
-                </div>
-
-                <p class="text-xs text-slate-700 mt-3">
-                    Kelola pengeluaran, bangun tabungan, raih tujuanmu.
-                </p>
-
-            </footer>
-
-
+            <h1 class="font-display text-3xl sm:text-4xl mt-5 tracking-tight">Pencatat Keuangan</h1>
+            <p class="text-sm text-mute mt-2">Catat pengeluaran, pantau sisa saldo, dan sisihkan tabungan.</p>
         </div>
 
-    </main>
 
+        <!-- CARD -->
+        <section class="rounded-3xl border border-line bg-panel p-6 sm:p-8">
 
+            <h2 class="font-display text-xl">Masuk ke akunmu</h2>
+            <p class="text-sm text-mute mt-1 mb-6">Masukkan username dan password untuk melanjutkan.</p>
 
-    <!-- JAVASCRIPT -->
+            <!-- FLASH -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                <div class="space-y-2 mb-5">
+                    {% for category, message in messages %}
+                    <div role="alert"
+                         class="flex items-start gap-3 rounded-xl px-4 py-3 text-sm border
+                         {% if category == 'danger' %}bg-rose/10 text-rose border-rose/25{% else %}bg-sage/10 text-sage border-sage/25{% endif %}">
+                        <i data-lucide="{% if category == 'danger' %}circle-alert{% else %}circle-check{% endif %}" class="w-4 h-4 mt-0.5 shrink-0"></i>
+                        <span>{{ message }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            {% endwith %}
 
-    <script>
+            <!-- FORM -->
+            <form action="{{ url_for('login') }}" method="POST" class="space-y-4">
 
-        // Menampilkan ikon Lucide
-        lucide.createIcons();
+                <div>
+                    <label for="username" class="block text-sm font-medium mb-2">Username</label>
+                    <div class="relative">
+                        <i data-lucide="user-round" class="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-mute pointer-events-none"></i>
+                        <input id="username" type="text" name="username" required autofocus
+                               autocomplete="username" autocapitalize="none" spellcheck="false"
+                               placeholder="Masukkan username" class="field">
+                    </div>
+                </div>
 
+                <div>
+                    <label for="password" class="block text-sm font-medium mb-2">Password</label>
+                    <div class="relative">
+                        <i data-lucide="lock-keyhole" class="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-mute pointer-events-none"></i>
+                        <input id="password" type="password" name="password" required
+                               autocomplete="current-password"
+                               placeholder="Masukkan password" class="field">
 
-        // Fitur tampilkan dan sembunyikan password
-        const passwordInput = document.getElementById("password");
+                        <button type="button" id="togglePassword"
+                                aria-label="Tampilkan password" aria-pressed="false"
+                                class="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-lg
+                                       flex items-center justify-center text-mute hover:text-ivory transition">
+                            <i data-lucide="eye" id="iconShow" class="w-[18px] h-[18px]"></i>
+                            <i data-lucide="eye-off" id="iconHide" class="w-[18px] h-[18px] hidden"></i>
+                        </button>
+                    </div>
+                </div>
 
-        const togglePassword = document.getElementById("togglePassword");
+                <button type="submit"
+                        class="w-full h-[3.25rem] mt-2 rounded-xl bg-gold text-ink font-semibold text-sm
+                               hover:brightness-110 active:scale-[.99] transition
+                               flex items-center justify-center gap-2">
+                    Masuk
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+            </form>
 
-        const eyeIcon = document.getElementById("eyeIcon");
+            <!-- REGISTER -->
+            <div class="mt-6 pt-6 border-t border-line text-center text-sm text-mute">
+                Belum punya akun?
+                <a href="{{ url_for('register') }}" class="font-semibold text-gold hover:underline underline-offset-4">
+                    Buat akun baru
+                </a>
+            </div>
+        </section>
 
+        <p class="mt-6 text-center text-xs text-mute">Pencatat Keuangan Bulanan</p>
+    </div>
+</main>
 
-        togglePassword.addEventListener("click", function () {
+<script>
+    lucide.createIcons();
 
-            const passwordIsHidden = passwordInput.type === "password";
+    const input = document.getElementById("password");
+    const btn   = document.getElementById("togglePassword");
+    const show  = document.getElementById("iconShow");
+    const hide  = document.getElementById("iconHide");
 
-            if (passwordIsHidden) {
-
-                passwordInput.type = "text";
-
-                togglePassword.setAttribute(
-                    "aria-label",
-                    "Sembunyikan password"
-                );
-
-                togglePassword.setAttribute(
-                    "aria-pressed",
-                    "true"
-                );
-
-                eyeIcon.setAttribute(
-                    "data-lucide",
-                    "eye-off"
-                );
-
-            } else {
-
-                passwordInput.type = "password";
-
-                togglePassword.setAttribute(
-                    "aria-label",
-                    "Tampilkan password"
-                );
-
-                togglePassword.setAttribute(
-                    "aria-pressed",
-                    "false"
-                );
-
-                eyeIcon.setAttribute(
-                    "data-lucide",
-                    "eye"
-                );
-
-            }
-
-            lucide.createIcons();
-
-        });
-
-    </script>
+    btn.addEventListener("click", () => {
+        const hidden = input.type === "password";
+        input.type = hidden ? "text" : "password";
+        btn.setAttribute("aria-label", hidden ? "Sembunyikan password" : "Tampilkan password");
+        btn.setAttribute("aria-pressed", hidden ? "true" : "false");
+        show.classList.toggle("hidden", hidden);
+        hide.classList.toggle("hidden", !hidden);
+    });
+</script>
 
 </body>
-
 </html>
