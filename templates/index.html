@@ -1,352 +1,215 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#06070d">
     <title>Pencatat Keuangan Bulanan</title>
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>document.documentElement.classList.add('js')</script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script src="https://unpkg.com/lucide@latest"></script>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
-                        display: ['Fraunces', 'Georgia', 'serif']
-                    },
-                    colors: {
-                        ink: '#0d1120',
-                        panel: '#141a2c',
-                        raise: '#1a2136',
-                        line: '#252d47',
-                        ivory: '#ece9e1',
-                        mute: '#8a92ab',
-                        gold: '#d9b86f',
-                        sage: '#7fbfa8',
-                        iris: '#a99be3',
-                        rose: '#e88c8c'
-                    }
-                }
-            }
-        }
-    </script>
-
-    <style>
-        body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
-        input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-        input[type="number"] { -moz-appearance: textfield; }
-        * { -webkit-tap-highlight-color: transparent; }
-        .field {
-            width: 100%; padding: .7rem .9rem; font-size: .875rem;
-            background: #0d1120; color: #ece9e1;
-            border: 1px solid #252d47; border-radius: .75rem;
-            transition: border-color .15s, box-shadow .15s;
-        }
-        .field::placeholder { color: #5b6380; }
-        .field:focus { outline: none; border-color: #d9b86f; box-shadow: 0 0 0 3px rgba(217, 184, 111, .15); }
-        .bar-seg { transition: width .8s cubic-bezier(.2, .8, .2, 1); }
-        @media (prefers-reduced-motion: reduce) { .bar-seg { transition: none; } }
-        :focus-visible { outline: 2px solid #d9b86f; outline-offset: 2px; }
-    </style>
 </head>
+<body>
 
-<body class="bg-ink text-ivory min-h-screen antialiased">
+<div class="aurora"><i></i><i></i><i></i></div>
 
-{# ---------- Persentase untuk bar alokasi ---------- #}
-{% set g = gaji or 0 %}
-{% set p_bayar = ((total_dibayar / g * 100) if g > 0 else 0) %}
-{% set p_belum = ((total_belum_dibayar / g * 100) if g > 0 else 0) %}
-{% set p_bayar = [p_bayar, 100]|min %}
-{% set p_belum = [p_belum, 100 - p_bayar]|min %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+    <span class="flash-data" hidden data-cat="{{ category }}" data-msg="{{ message }}"></span>
+    {% endfor %}
+{% endwith %}
 
-<!-- ================= TOP BAR ================= -->
-<header class="sticky top-0 z-20 border-b border-line bg-ink/85 backdrop-blur">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
-
-        <div class="flex items-center gap-3 min-w-0">
-            <div class="shrink-0 w-9 h-9 rounded-xl bg-gold text-ink flex items-center justify-center">
-                <i data-lucide="wallet" class="w-5 h-5"></i>
-            </div>
-            <div class="min-w-0">
-                <h1 class="font-display text-lg leading-tight truncate">Pencatat Keuangan</h1>
-                <p class="hidden sm:block text-[11px] text-mute -mt-0.5">{{ bulan_sekarang }}</p>
-            </div>
+<!-- TOP BAR -->
+<header class="top reveal">
+    <div class="top-in glass">
+        <div class="brand">
+            <span class="logo"><i data-lucide="wallet"></i></span>
+            <span><b>Pencatat Keuangan</b><small>{{ bulan_sekarang }}</small></span>
         </div>
-
-        <div class="flex items-center gap-2">
-            <div class="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-panel border border-line min-w-0">
-                <span class="shrink-0 w-7 h-7 rounded-full bg-raise flex items-center justify-center text-gold">
-                    <i data-lucide="user" class="w-3.5 h-3.5"></i>
-                </span>
-                <span class="text-sm font-medium truncate max-w-[110px] sm:max-w-[200px]">{{ username }}</span>
+        <div class="right">
+            <div class="user">
+                <span class="av">{{ username[:1]|upper }}</span>
+                <span class="uname">{{ username }}</span>
             </div>
-
-            <a href="{{ url_for('logout') }}"
-               onclick="return confirm('Yakin ingin keluar dari akun?')"
-               title="Keluar"
-               class="w-9 h-9 flex items-center justify-center rounded-full border border-line text-mute hover:text-rose hover:border-rose/40 transition">
-                <i data-lucide="log-out" class="w-4 h-4"></i>
-                <span class="sr-only">Keluar</span>
+            <a class="icon-btn out" href="{{ url_for('logout') }}" data-confirm="Yakin ingin keluar dari akun?" title="Keluar">
+                <i data-lucide="log-out"></i>
             </a>
         </div>
     </div>
 </header>
 
+<main class="wrap">
 
-<main class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
-
-    <!-- ================= FLASH ================= -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        <div class="space-y-2">
-            {% for category, message in messages %}
-            <div class="flex items-start gap-3 rounded-xl px-4 py-3 text-sm border
-                {% if category == 'danger' %}bg-rose/10 text-rose border-rose/25{% else %}bg-sage/10 text-sage border-sage/25{% endif %}">
-                <i data-lucide="{% if category == 'danger' %}circle-alert{% else %}circle-check{% endif %}" class="w-4 h-4 mt-0.5 shrink-0"></i>
-                <span>{{ message }}</span>
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
-    {% endwith %}
-
-
-    <!-- ================= HERO: SISA SALDO ================= -->
-    <section class="grid lg:grid-cols-5 gap-4">
-
-        <div class="lg:col-span-3 rounded-3xl border border-line bg-panel p-6 sm:p-8">
-
-            <p class="text-sm text-mute">Sisa saldo bulan ini</p>
-
-            <p class="font-display text-4xl sm:text-6xl mt-2 tracking-tight break-words
-                      {% if sisa_saldo >= 0 %}text-ivory{% else %}text-rose{% endif %}">
-                {{ sisa_saldo|rupiah }}
-            </p>
-
+    <!-- HERO -->
+    <section class="hero">
+        <div class="glass glow hero-main reveal">
+            <p class="label">Sisa saldo bulan ini</p>
+            <h2 class="balance num {% if sisa_saldo < 0 %}neg{% endif %}" data-count="{{ sisa_saldo|float }}">{{ sisa_saldo|rupiah }}</h2>
             {% if sisa_saldo < 0 %}
-            <p class="mt-2 text-sm text-rose">Pengeluaran melebihi gaji. Kurangi atau tunda beberapa tagihan.</p>
+            <p class="warn-line">Pengeluaran melebihi gaji. Kurangi atau tunda beberapa tagihan.</p>
             {% endif %}
 
-            <!-- Bar alokasi gaji -->
-            <div class="mt-8">
-                <div class="flex h-2.5 rounded-full overflow-hidden bg-raise">
-                    <div class="bar-seg bg-sage" style="width: {{ p_bayar }}%"></div>
-                    <div class="bar-seg bg-gold" style="width: {{ p_belum }}%"></div>
+            <label class="label" for="gaji">Gaji bulan ini</label>
+            <form class="salary" action="{{ url_for('set_gaji') }}" method="POST">
+                <div class="fld has-icon">
+                    <i data-lucide="banknote" class="ico"></i>
+                    <input id="gaji" class="field" type="number" name="gaji" value="{{ gaji }}" min="0" required inputmode="numeric" placeholder="5000000" data-money>
+                    <span class="hint"></span>
                 </div>
-
-                <div class="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-xs text-mute">
-                    <span class="inline-flex items-center gap-2"><i class="w-2 h-2 rounded-full bg-sage"></i>Sudah dibayar {{ p_bayar|round|int }}%</span>
-                    <span class="inline-flex items-center gap-2"><i class="w-2 h-2 rounded-full bg-gold"></i>Belum dibayar {{ p_belum|round|int }}%</span>
-                    <span class="inline-flex items-center gap-2"><i class="w-2 h-2 rounded-full bg-line"></i>Sisa dari gaji</span>
-                </div>
-            </div>
-        </div>
-
-
-        <!-- Form gaji -->
-        <div class="lg:col-span-2 rounded-3xl border border-line bg-panel p-6 sm:p-8 flex flex-col justify-between gap-6">
-            <div>
-                <h2 class="font-display text-xl">Gaji bulan ini</h2>
-                <p class="text-sm text-mute mt-1">Ubah nominal kapan saja, saldo akan dihitung ulang.</p>
-            </div>
-
-            <form action="{{ url_for('set_gaji') }}" method="POST" class="space-y-3">
-                <label for="gaji" class="sr-only">Gaji</label>
-                <div class="relative">
-                    <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-mute text-sm">Rp</span>
-                    <input id="gaji" type="number" name="gaji" value="{{ gaji }}" min="0" required
-                           inputmode="numeric" placeholder="5000000" class="field !pl-10">
-                </div>
-                <button type="submit"
-                        class="w-full py-3 rounded-xl bg-gold text-ink font-semibold text-sm
-                               hover:brightness-110 active:scale-[.99] transition flex items-center justify-center gap-2">
-                    <i data-lucide="check" class="w-4 h-4"></i>
-                    Simpan gaji
-                </button>
+                <button class="btn btn-primary" type="submit"><i data-lucide="check"></i>Simpan</button>
             </form>
         </div>
-    </section>
 
-
-    <!-- ================= RINGKASAN ================= -->
-    <section class="rounded-3xl border border-line bg-panel grid grid-cols-2 lg:grid-cols-4
-                    divide-line [&>*]:p-5 sm:[&>*]:p-6
-                    max-lg:divide-y lg:divide-x">
-
-        <div class="max-lg:border-r max-lg:border-line">
-            <div class="flex items-center gap-2 text-xs text-mute">
-                <i data-lucide="banknote" class="w-4 h-4 text-ivory"></i> Gaji
+        <div class="glass ring-card reveal">
+            <div class="ring" data-gaji="{{ (gaji or 0)|float }}" data-bayar="{{ total_dibayar|float }}" data-belum="{{ total_belum_dibayar|float }}">
+                <svg viewBox="0 0 140 140">
+                    <circle class="trk" cx="70" cy="70" r="56"/>
+                    <circle class="seg seg-belum" cx="70" cy="70" r="56"/>
+                    <circle class="seg seg-bayar" cx="70" cy="70" r="56"/>
+                </svg>
+                <div class="ring-c"><span class="ring-pct num">0%</span><small>gaji terpakai</small></div>
             </div>
-            <p class="mt-2 text-lg sm:text-xl font-semibold truncate">{{ gaji|rupiah }}</p>
-        </div>
-
-        <div>
-            <div class="flex items-center gap-2 text-xs text-mute">
-                <i data-lucide="circle-check" class="w-4 h-4 text-sage"></i> Sudah dibayar
+            <div class="legend">
+                <span><i style="background:var(--ok)"></i>Dibayar <b id="lg-bayar">0%</b></span>
+                <span><i style="background:var(--warn)"></i>Belum <b id="lg-belum">0%</b></span>
             </div>
-            <p class="mt-2 text-lg sm:text-xl font-semibold text-sage truncate">{{ total_dibayar|rupiah }}</p>
-        </div>
-
-        <div class="max-lg:border-r max-lg:border-line">
-            <div class="flex items-center gap-2 text-xs text-mute">
-                <i data-lucide="clock-3" class="w-4 h-4 text-gold"></i> Belum dibayar
-            </div>
-            <p class="mt-2 text-lg sm:text-xl font-semibold text-gold truncate">{{ total_belum_dibayar|rupiah }}</p>
-        </div>
-
-        <div>
-            <div class="flex items-center gap-2 text-xs text-mute">
-                <i data-lucide="piggy-bank" class="w-4 h-4 text-iris"></i> Total tabungan
-            </div>
-            <p class="mt-2 text-lg sm:text-xl font-semibold text-iris truncate">{{ total_tabungan|rupiah }}</p>
         </div>
     </section>
 
+    <!-- STATS -->
+    <section class="stats">
+        <div class="glass stat tilt reveal">
+            <div class="bub c-sky"><i data-lucide="banknote"></i></div>
+            <p class="label">Gaji</p>
+            <p class="v num" data-count="{{ (gaji or 0)|float }}">{{ gaji|rupiah }}</p>
+        </div>
+        <div class="glass stat tilt reveal">
+            <div class="bub c-ok"><i data-lucide="circle-check"></i></div>
+            <p class="label">Sudah dibayar</p>
+            <p class="v num" data-count="{{ total_dibayar|float }}">{{ total_dibayar|rupiah }}</p>
+        </div>
+        <div class="glass stat tilt reveal">
+            <div class="bub c-warn"><i data-lucide="clock"></i></div>
+            <p class="label">Belum dibayar</p>
+            <p class="v num" data-count="{{ total_belum_dibayar|float }}">{{ total_belum_dibayar|rupiah }}</p>
+        </div>
+        <div class="glass stat tilt reveal">
+            <div class="bub c-save"><i data-lucide="piggy-bank"></i></div>
+            <p class="label">Total tabungan</p>
+            <p class="v num" data-count="{{ total_tabungan|float }}">{{ total_tabungan|rupiah }}</p>
+        </div>
+    </section>
 
-    <!-- ================= PENGELUARAN & TABUNGAN ================= -->
-    <div class="grid lg:grid-cols-2 gap-4 items-start">
+    <!-- TABS (HP) -->
+    <div class="tabs glass reveal">
+        <button class="tab on" data-tab="exp" type="button">Pengeluaran</button>
+        <button class="tab" data-tab="sav" type="button">Tabungan</button>
+    </div>
 
-        <!-- ---------- PENGELUARAN ---------- -->
-        <section class="rounded-3xl border border-line bg-panel overflow-hidden">
+    <div class="cols">
 
-            <div class="p-5 sm:p-6 border-b border-line">
-                <div class="flex items-center justify-between gap-3">
-                    <h2 class="font-display text-xl">Pengeluaran</h2>
-                    <span class="px-2.5 py-1 rounded-full bg-raise text-xs text-mute">{{ pengeluaran|length }} data</span>
+        <!-- PENGELUARAN -->
+        <section class="glass panel show reveal" data-panel="exp">
+            <div class="p-head">
+                <div class="p-title">
+                    <h3>Pengeluaran</h3>
+                    <span class="badge">{{ pengeluaran|length }} data</span>
                 </div>
-
-                <form action="{{ url_for('tambah_pengeluaran') }}" method="POST"
-                      class="mt-4 grid grid-cols-1 sm:grid-cols-[1fr_9rem_auto] gap-2">
-                    <input type="text" name="nama" required placeholder="Nama, mis. Listrik" aria-label="Nama pengeluaran" class="field">
-                    <input type="number" name="jumlah" min="1" required inputmode="numeric" placeholder="Jumlah" aria-label="Jumlah" class="field">
-                    <button type="submit"
-                            class="px-4 py-3 rounded-xl bg-ivory text-ink text-sm font-semibold hover:bg-white transition
-                                   flex items-center justify-center gap-2">
-                        <i data-lucide="plus" class="w-4 h-4"></i> Tambah
-                    </button>
+                <form class="add row" action="{{ url_for('tambah_pengeluaran') }}" method="POST">
+                    <input class="field" type="text" name="nama" required placeholder="Nama, mis. Listrik" aria-label="Nama pengeluaran">
+                    <input class="field" type="number" name="jumlah" min="1" required inputmode="numeric" placeholder="Jumlah" aria-label="Jumlah">
+                    <button class="btn btn-primary" type="submit"><i data-lucide="plus"></i>Tambah</button>
                 </form>
             </div>
 
             {% if pengeluaran %}
-            <ul class="divide-y divide-line">
+            <div class="tools">
+                <div class="has-icon">
+                    <i data-lucide="search" class="ico"></i>
+                    <input id="search" class="field" type="search" placeholder="Cari pengeluaran" aria-label="Cari pengeluaran">
+                </div>
+                <div class="chips">
+                    <button class="chip on" data-f="all" type="button">Semua</button>
+                    <button class="chip" data-f="belum" type="button">Belum</button>
+                    <button class="chip" data-f="sudah" type="button">Sudah</button>
+                </div>
+            </div>
+
+            <ul class="list" id="expList">
                 {% for item in pengeluaran %}
-                <li class="flex items-center gap-3 px-5 sm:px-6 py-4 hover:bg-raise/50 transition">
-
-                    <a href="{{ url_for('toggle_pengeluaran', id=item.id) }}"
-                       title="{% if item.status == 'Sudah Dibayar' %}Tandai belum dibayar{% else %}Tandai sudah dibayar{% endif %}"
-                       class="shrink-0 w-8 h-8 rounded-full flex items-center justify-center border transition
-                              {% if item.status == 'Sudah Dibayar' %}bg-sage text-ink border-sage{% else %}border-line text-transparent hover:border-sage hover:text-sage{% endif %}">
-                        <i data-lucide="check" class="w-4 h-4"></i>
-                        <span class="sr-only">Ubah status</span>
+                {% set lunas = item.status == 'Sudah Dibayar' %}
+                <li class="item {% if lunas %}done{% endif %}" data-status="{{ 'sudah' if lunas else 'belum' }}" data-name="{{ item.nama|lower }}">
+                    <a class="check {% if lunas %}on{% endif %}" href="{{ url_for('toggle_pengeluaran', id=item.id) }}"
+                       title="{{ 'Tandai belum dibayar' if lunas else 'Tandai sudah dibayar' }}">
+                        <i data-lucide="check"></i>
                     </a>
-
-                    <div class="min-w-0 flex-1">
-                        <p class="font-medium truncate {% if item.status == 'Sudah Dibayar' %}text-mute line-through decoration-line{% endif %}">
-                            {{ item.nama }}
-                        </p>
-                        <p class="text-xs text-mute mt-0.5">
-                            {{ item.tanggal.strftime('%d-%m-%Y %H:%M') }}
-                            <span class="mx-1">&middot;</span>
-                            <span class="{% if item.status == 'Sudah Dibayar' %}text-sage{% else %}text-gold{% endif %}">{{ item.status }}</span>
-                        </p>
+                    <div class="info">
+                        <b>{{ item.nama }}</b>
+                        <small>{{ item.tanggal.strftime('%d-%m-%Y %H:%M') }} &middot;
+                            <span class="{{ 't-ok' if lunas else 't-warn' }}">{{ item.status }}</span></small>
                     </div>
-
-                    <p class="font-semibold text-sm sm:text-base whitespace-nowrap">{{ item.jumlah|rupiah }}</p>
-
-                    <a href="{{ url_for('hapus_pengeluaran', id=item.id) }}"
-                       onclick="return confirm('Hapus pengeluaran ini?')"
-                       title="Hapus"
-                       class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-mute hover:text-rose hover:bg-rose/10 transition">
-                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                        <span class="sr-only">Hapus</span>
+                    <span class="amt num">{{ item.jumlah|rupiah }}</span>
+                    <a class="icon-btn" href="{{ url_for('hapus_pengeluaran', id=item.id) }}" data-confirm="Hapus pengeluaran ini?" title="Hapus">
+                        <i data-lucide="trash-2"></i>
                     </a>
                 </li>
                 {% endfor %}
             </ul>
+            <div class="empty" id="noMatch" hidden>
+                <b>Tidak ditemukan</b>Coba kata kunci atau filter lain.
+            </div>
             {% else %}
-            <div class="px-6 py-12 text-center">
-                <div class="inline-flex p-3 rounded-2xl bg-raise text-mute mb-3"><i data-lucide="receipt" class="w-6 h-6"></i></div>
-                <p class="font-medium">Belum ada pengeluaran</p>
-                <p class="text-sm text-mute mt-1">Isi formulir di atas untuk mencatat yang pertama.</p>
+            <div class="empty">
+                <div class="bub"><i data-lucide="receipt"></i></div>
+                <b>Belum ada pengeluaran</b>Isi formulir di atas untuk mencatat yang pertama.
             </div>
             {% endif %}
         </section>
 
-
-        <!-- ---------- TABUNGAN ---------- -->
-        <section class="rounded-3xl border border-line bg-panel overflow-hidden">
-
-            <div class="p-5 sm:p-6 border-b border-line">
-                <div class="flex items-center justify-between gap-3">
-                    <h2 class="font-display text-xl">Tabungan</h2>
-                    <span class="px-2.5 py-1 rounded-full bg-raise text-xs text-mute">{{ tabungan|length }} data</span>
+        <!-- TABUNGAN -->
+        <section class="glass panel reveal" data-panel="sav">
+            <div class="p-head">
+                <div class="p-title">
+                    <h3>Tabungan</h3>
+                    <span class="badge">{{ tabungan|length }} data</span>
                 </div>
-
-                <form action="{{ url_for('tambah_tabungan') }}" method="POST"
-                      class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <input type="text" name="bulan" value="{{ bulan_sekarang }}" placeholder="Bulan, mis. Oktober 2026" aria-label="Bulan" class="field">
-                    <input type="number" name="jumlah" min="1" required inputmode="numeric" placeholder="Jumlah" aria-label="Jumlah" class="field">
-                    <input type="text" name="catatan" placeholder="Catatan, mis. Dana darurat" aria-label="Catatan" class="field sm:col-span-2">
-                    <button type="submit"
-                            class="sm:col-span-2 py-3 rounded-xl bg-iris text-ink text-sm font-semibold hover:brightness-110 transition
-                                   flex items-center justify-center gap-2">
-                        <i data-lucide="plus" class="w-4 h-4"></i> Tambah tabungan
-                    </button>
+                <form class="add two" action="{{ url_for('tambah_tabungan') }}" method="POST">
+                    <input class="field" type="text" name="bulan" value="{{ bulan_sekarang }}" placeholder="Bulan, mis. Oktober 2026" aria-label="Bulan">
+                    <input class="field" type="number" name="jumlah" min="1" required inputmode="numeric" placeholder="Jumlah" aria-label="Jumlah">
+                    <input class="field full" type="text" name="catatan" placeholder="Catatan, mis. Dana darurat" aria-label="Catatan">
+                    <button class="btn btn-save full" type="submit"><i data-lucide="plus"></i>Tambah tabungan</button>
                 </form>
             </div>
 
             {% if tabungan %}
-            <ul class="divide-y divide-line">
+            <ul class="list">
                 {% for item in tabungan %}
-                <li class="flex items-center gap-3 px-5 sm:px-6 py-4 hover:bg-raise/50 transition">
-
-                    <span class="shrink-0 w-8 h-8 rounded-full bg-iris/10 text-iris flex items-center justify-center">
-                        <i data-lucide="piggy-bank" class="w-4 h-4"></i>
-                    </span>
-
-                    <div class="min-w-0 flex-1">
-                        <p class="font-medium truncate">{{ item.bulan }}</p>
-                        <p class="text-xs text-mute mt-0.5 truncate">{{ item.catatan or "Tanpa catatan" }}</p>
+                <li class="item">
+                    <span class="sv"><i data-lucide="piggy-bank"></i></span>
+                    <div class="info">
+                        <b>{{ item.bulan }}</b>
+                        <small>{{ item.catatan or "Tanpa catatan" }}</small>
                     </div>
-
-                    <p class="font-semibold text-iris text-sm sm:text-base whitespace-nowrap">{{ item.jumlah|rupiah }}</p>
-
-                    <a href="{{ url_for('hapus_tabungan', id=item.id) }}"
-                       onclick="return confirm('Hapus tabungan ini?')"
-                       title="Hapus"
-                       class="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-mute hover:text-rose hover:bg-rose/10 transition">
-                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                        <span class="sr-only">Hapus</span>
+                    <span class="amt s num">{{ item.jumlah|rupiah }}</span>
+                    <a class="icon-btn" href="{{ url_for('hapus_tabungan', id=item.id) }}" data-confirm="Hapus tabungan ini?" title="Hapus">
+                        <i data-lucide="trash-2"></i>
                     </a>
                 </li>
                 {% endfor %}
             </ul>
             {% else %}
-            <div class="px-6 py-12 text-center">
-                <div class="inline-flex p-3 rounded-2xl bg-raise text-mute mb-3"><i data-lucide="piggy-bank" class="w-6 h-6"></i></div>
-                <p class="font-medium">Belum ada tabungan</p>
-                <p class="text-sm text-mute mt-1">Isi formulir di atas untuk menyimpan yang pertama.</p>
+            <div class="empty">
+                <div class="bub"><i data-lucide="piggy-bank"></i></div>
+                <b>Belum ada tabungan</b>Isi formulir di atas untuk menyimpan yang pertama.
             </div>
             {% endif %}
         </section>
     </div>
 
+    <p class="foot">Pencatat Keuangan Bulanan &middot; {{ username }}</p>
 </main>
 
-<footer class="max-w-6xl mx-auto px-4 sm:px-6 pb-8 text-center text-xs text-mute">
-    Pencatat Keuangan Bulanan &middot; {{ username }}
-</footer>
-
-<script>
-    lucide.createIcons();
-</script>
-
+<script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>

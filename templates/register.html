@@ -1,181 +1,91 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#0d1120">
+    <meta name="theme-color" content="#06070d">
     <title>Daftar - Pencatat Keuangan</title>
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>document.documentElement.classList.add('js')</script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script src="https://unpkg.com/lucide@latest"></script>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
-                        display: ['Fraunces', 'Georgia', 'serif']
-                    },
-                    colors: {
-                        ink: '#0d1120',
-                        panel: '#141a2c',
-                        raise: '#1a2136',
-                        line: '#252d47',
-                        ivory: '#ece9e1',
-                        mute: '#8a92ab',
-                        gold: '#d9b86f',
-                        sage: '#7fbfa8',
-                        rose: '#e88c8c'
-                    }
-                }
-            }
-        }
-    </script>
-
-    <style>
-        body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
-        * { -webkit-tap-highlight-color: transparent; }
-
-        .field {
-            width: 100%; height: 3.25rem; padding: 0 2.75rem;
-            font-size: 1rem; color: #ece9e1;
-            background: #0d1120;
-            border: 1px solid #252d47; border-radius: .875rem;
-            transition: border-color .15s, box-shadow .15s;
-        }
-        .field::placeholder { color: #5b6380; }
-        .field:hover { border-color: #3a4466; }
-        .field:focus {
-            outline: none; border-color: #d9b86f;
-            box-shadow: 0 0 0 3px rgba(217, 184, 111, .15);
-        }
-        :focus-visible { outline: 2px solid #d9b86f; outline-offset: 2px; }
-
-        .card-in { animation: rise .5s cubic-bezier(.2, .8, .2, 1) both; }
-        @keyframes rise {
-            from { opacity: 0; transform: translateY(14px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-        @media (prefers-reduced-motion: reduce) { .card-in { animation: none; } }
-    </style>
 </head>
+<body>
 
-<body class="bg-ink text-ivory min-h-screen antialiased">
+<div class="aurora"><i></i><i></i><i></i></div>
 
-<main class="min-h-screen flex items-center justify-center px-4 py-10">
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+    <span class="flash-data" hidden data-cat="{{ category }}" data-msg="{{ message }}"></span>
+    {% endfor %}
+{% endwith %}
 
-    <div class="card-in w-full max-w-md">
+<main class="auth">
 
-        <!-- BRAND -->
-        <div class="text-center mb-8">
-            <div class="mx-auto w-12 h-12 rounded-2xl bg-gold text-ink flex items-center justify-center">
-                <i data-lucide="wallet" class="w-6 h-6"></i>
-            </div>
-            <h1 class="font-display text-3xl sm:text-4xl mt-5 tracking-tight">Pencatat Keuangan</h1>
-            <p class="text-sm text-mute mt-2">Catat pengeluaran, pantau sisa saldo, dan sisihkan tabungan.</p>
+    <!-- SISI KIRI (desktop) -->
+    <section class="showcase">
+        <div class="brand">
+            <span class="logo"><i data-lucide="wallet"></i></span>
+            <b>Pencatat Keuangan</b>
         </div>
+        <h2>Mulai atur keuanganmu<br><span>dari hari ini.</span></h2>
+        <p>Buat akun gratis dan langsung catat gaji, tagihan, serta tabungan bulananmu.</p>
 
+        <div class="floaters" aria-hidden="true">
+            <div class="fl glass"><span class="bub c-warn" style="margin:0"><i data-lucide="clock"></i></span><div><small>Belum dibayar</small><b>Rp 1.150.000</b></div></div>
+            <div class="fl glass"><span class="bub c-ok" style="margin:0"><i data-lucide="circle-check"></i></span><div><small>Sudah dibayar</small><b>Rp 2.400.000</b></div></div>
+            <div class="fl glass"><span class="bub c-save" style="margin:0"><i data-lucide="piggy-bank"></i></span><div><small>Dana darurat</small><b>Rp 5.000.000</b></div></div>
+        </div>
+    </section>
 
-        <!-- CARD -->
-        <section class="rounded-3xl border border-line bg-panel p-6 sm:p-8">
+    <!-- FORM -->
+    <section class="auth-form">
+        <div class="auth-card glass glow reveal">
 
-            <h2 class="font-display text-xl">Buat akun baru</h2>
-            <p class="text-sm text-mute mt-1 mb-6">Isi username dan password untuk mulai mencatat.</p>
+            <div class="mob-brand">
+                <span class="logo"><i data-lucide="wallet"></i></span>
+                <b style="font-family:Sora">Pencatat Keuangan</b>
+            </div>
 
-            <!-- FLASH -->
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                <div class="space-y-2 mb-5">
-                    {% for category, message in messages %}
-                    <div role="alert"
-                         class="flex items-start gap-3 rounded-xl px-4 py-3 text-sm border
-                         {% if category == 'danger' %}bg-rose/10 text-rose border-rose/25{% else %}bg-sage/10 text-sage border-sage/25{% endif %}">
-                        <i data-lucide="{% if category == 'danger' %}circle-alert{% else %}circle-check{% endif %}" class="w-4 h-4 mt-0.5 shrink-0"></i>
-                        <span>{{ message }}</span>
+            <h1>Buat akun baru</h1>
+            <p class="sub">Isi username dan password untuk mulai mencatat.</p>
+
+            <form action="{{ url_for('register') }}" method="POST">
+                <div class="fld">
+                    <label for="username">Username</label>
+                    <div class="has-icon">
+                        <i data-lucide="user-round" class="ico"></i>
+                        <input id="username" class="field" type="text" name="username" required autofocus
+                               minlength="3" maxlength="50" autocomplete="username" autocapitalize="none"
+                               spellcheck="false" placeholder="Masukkan username">
                     </div>
-                    {% endfor %}
-                </div>
-                {% endif %}
-            {% endwith %}
-
-            <!-- FORM -->
-            <form action="{{ url_for('register') }}" method="POST" class="space-y-4">
-
-                <div>
-                    <label for="username" class="block text-sm font-medium mb-2">Username</label>
-                    <div class="relative">
-                        <i data-lucide="user-round" class="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-mute pointer-events-none"></i>
-                        <input id="username" type="text" name="username" required autofocus
-                               minlength="3" maxlength="50"
-                               autocomplete="username" autocapitalize="none" spellcheck="false"
-                               placeholder="Masukkan username" class="field">
-                    </div>
-                    <p class="text-xs text-mute mt-2">Minimal 3 karakter.</p>
+                    <span class="hint">Minimal 3 karakter.</span>
                 </div>
 
-                <div>
-                    <label for="password" class="block text-sm font-medium mb-2">Password</label>
-                    <div class="relative">
-                        <i data-lucide="lock-keyhole" class="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-mute pointer-events-none"></i>
-                        <input id="password" type="password" name="password" required
-                               minlength="6" autocomplete="new-password"
-                               placeholder="Buat password" class="field">
-
-                        <button type="button" id="togglePassword"
-                                aria-label="Tampilkan password" aria-pressed="false"
-                                class="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-lg
-                                       flex items-center justify-center text-mute hover:text-ivory transition">
-                            <i data-lucide="eye" id="iconShow" class="w-[18px] h-[18px]"></i>
-                            <i data-lucide="eye-off" id="iconHide" class="w-[18px] h-[18px] hidden"></i>
+                <div class="fld">
+                    <label for="password">Password</label>
+                    <div class="has-icon">
+                        <i data-lucide="lock-keyhole" class="ico"></i>
+                        <input id="password" class="field pr" type="password" name="password" required
+                               minlength="6" autocomplete="new-password" placeholder="Buat password" data-meter>
+                        <button class="eye" type="button" data-eye="password" aria-label="Tampilkan password">
+                            <i data-lucide="eye" class="e-show"></i><i data-lucide="eye-off" class="e-hide"></i>
                         </button>
                     </div>
-                    <p class="text-xs text-mute mt-2">Minimal 6 karakter. Jangan bagikan ke orang lain.</p>
+                    <div class="meter"><i></i></div>
+                    <span class="hint">Minimal 6 karakter. <b class="meter-l"></b></span>
                 </div>
 
-                <button type="submit"
-                        class="w-full h-[3.25rem] mt-2 rounded-xl bg-gold text-ink font-semibold text-sm
-                               hover:brightness-110 active:scale-[.99] transition
-                               flex items-center justify-center gap-2">
-                    <i data-lucide="user-plus" class="w-4 h-4"></i>
-                    Buat akun
+                <button class="btn btn-primary btn-block" type="submit" style="height:50px;margin-top:.4rem">
+                    <i data-lucide="user-plus"></i> Buat akun
                 </button>
             </form>
 
-            <!-- LOGIN -->
-            <div class="mt-6 pt-6 border-t border-line text-center text-sm text-mute">
-                Sudah punya akun?
-                <a href="{{ url_for('login') }}" class="font-semibold text-gold hover:underline underline-offset-4">
-                    Masuk
-                </a>
-            </div>
-        </section>
-
-        <p class="mt-6 text-center text-xs text-mute">&copy; 2026 Pencatat Keuangan</p>
-    </div>
+            <p class="switch">Sudah punya akun? <a href="{{ url_for('login') }}">Masuk</a></p>
+        </div>
+    </section>
 </main>
 
-<script>
-    lucide.createIcons();
-
-    const input = document.getElementById("password");
-    const btn   = document.getElementById("togglePassword");
-    const show  = document.getElementById("iconShow");
-    const hide  = document.getElementById("iconHide");
-
-    btn.addEventListener("click", () => {
-        const hidden = input.type === "password";
-        input.type = hidden ? "text" : "password";
-        btn.setAttribute("aria-label", hidden ? "Sembunyikan password" : "Tampilkan password");
-        btn.setAttribute("aria-pressed", hidden ? "true" : "false");
-        show.classList.toggle("hidden", hidden);
-        hide.classList.toggle("hidden", !hidden);
-    });
-</script>
-
+<script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>
